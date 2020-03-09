@@ -1,0 +1,33 @@
+.loginPage{
+    position: fixed;
+    left:50%;
+    transform: translateX(-50%);
+    top:100px;
+    z-index: 99;
+    width: 200px;
+    height: 130px;
+    border: 1px groove black;
+    border-radius: 5px;
+    background-color: burlywood;
+    text-align: center;
+}
+
+.wrongAuth{
+    color:rgb(156, 7, 7);
+    animation: changeColor 0.8s forwards;
+  }
+
+  
+@keyframes changeColor{
+    0%{
+      color: rgb(241, 207, 207);
+      text-shadow: #f8f4f4;
+  
+      
+    }
+    100%{
+      
+      color:rgb(245, 51, 51);
+    }
+  }
+  

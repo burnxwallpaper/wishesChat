@@ -1,0 +1,45 @@
+.LobbyPage{
+    background-color: cornsilk;
+    display: flex;
+    flex-direction: row;
+}
+
+.roombtn{
+    cursor: pointer;
+    width:150px;
+    height: 70px;
+    border: 1px groove black;
+    border-radius: 3px;
+    background-color: burlywood;
+    margin: 10px;
+    text-align: left;
+    padding-left: 15px;
+}
+
+.createBtn{
+    cursor: pointer;
+    width:70px;
+    height: 50px;
+    border: 1px groove black;
+    border-radius: 3px;
+    background-color: rgb(142, 185, 235);
+    margin: 10px;
+}
+
+.userList{
+    width: 200px;
+    height: 100vh;
+    background-color: cadetblue;
+}
+
+.offlineFriendContainer,.onlineFriendContainer{
+    text-align: left;
+    font-weight: 500;
+
+}
+
+.offlineFriend,.onlineFriend{
+
+    font-weight: 100;
+    text-align: left;
+}

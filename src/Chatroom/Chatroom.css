@@ -1,0 +1,19 @@
+.chatRoom{
+
+    
+    height: 80vh;
+    border: 1px black groove;
+    overflow: scroll;
+}
+
+.ownMsg{
+    text-align: right;
+}
+
+.othersMsg{
+    text-align: left;
+}
+
+.adminMsg{
+    text-align: center;
+}

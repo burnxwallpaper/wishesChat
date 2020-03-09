@@ -1,0 +1,16 @@
+.CreatRoom{
+    width:200px;
+    height:150px;
+    border: 1px groove black;
+    border-radius: 3px;
+    background-color: burlywood;
+    z-index: 99;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    top:50px;
+}
+
+.close{
+    border: 1px groove black;
+}
