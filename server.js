@@ -296,9 +296,11 @@ io.on('connection', function (socket) {
     if (roomInfo[roomID]) {
       let userIDIndex = roomInfo[roomID].indexOf(socket.username);
       roomInfo[roomID].splice(userIDIndex, 1);
+      io.to(roomID).emit('broadcast', { username: "admin", user: { username: user.username }, join: false });
+      io.to(roomID).emit('roomInfo', { userList: roomInfo[roomID] });
       if (roomHost[roomID] === user.username) {
-        io.to(roomID).emit('roomInfo', { userList: roomInfo[roomID] });
-        io.to(roomID).emit('broadcast', { username: "admin", user: { username: user.username }, join: false });
+
+
         //change host
         if (roomInfo[roomID].length > 0) {
           roomHost[roomID] = roomInfo[roomID][0]
