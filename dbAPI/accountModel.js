@@ -6,12 +6,11 @@ const accountModel = new Schema(
     {
         username: { type: String },
         password: { type: String },
-        admin: { type: Boolean },
-        history: { type: String },
-        token: { type: mongoose.Mixed },
-        information: { type: String },
-        friends: { type: Array }
-
+        //information: { type: String },
+        friends: { type: Array },
+        fdRooms: { type: Array },
+        fdRequestReceived: { type: Array },
+        fdRequestSent: { type: Array },
     }
 )
 

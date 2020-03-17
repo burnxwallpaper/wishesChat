@@ -1,30 +1,41 @@
 import React, { useEffect } from 'react';
 import './LoginPage.css'
 import freeze from '../Common/freeze'
-/*import {
+import {
     BrowserRouter as Router,
     Switch,
     Route, Redirect,
     Link
-} from "react-router-dom";*/
-function LoginPage({ username, socket, setUsername, ...props }) {
+} from "react-router-dom";
+function LoginPage({ socket, setAccountInfo, setChatRecord, ...props }) {
     useEffect(() => {
         socket.emit('disconnect')
         socket.removeAllListeners()
-        setUsername(null)
+        setAccountInfo(null)
     }, []
     )
 
 
-    function login() {
+    function login(visitor = false) {
         socket.removeAllListeners()
+        let username, password
+        if (visitor) {
+            username = "遊客";
+            password = "遊客"
+        } else {
+            username = document.getElementById("inputName").value;
+            password = document.getElementById("inputPassword").value
+        }
+
         socket.emit("login", {
-            username: document.getElementById("inputName").value,
-            password: document.getElementById("inputPassword").value
+            username: username,
+            password: password
         })
         socket.on("loginStatus", function (status) {
             if (status.loginStatus) {
-                setUsername(document.getElementById("inputName").value)
+                setAccountInfo(status.accountInfo)
+                setChatRecord(status.chatRecord)
+                console.log(status.chatRecord)
                 freeze(false);
                 return props.history.push('/')
             }
@@ -35,6 +46,8 @@ function LoginPage({ username, socket, setUsername, ...props }) {
                 document.getElementById("authWrong").classList.add("wrongAuth")
             }
         })
+
+
 
 
     }
@@ -48,7 +61,9 @@ function LoginPage({ username, socket, setUsername, ...props }) {
             <input id="inputName"></input>
             <label>Password: </label>
             <input id="inputPassword"></input>
-            <button onClick={() => login()}>Login</button>
+            <button onClick={() => login(false)}>Login</button>
+            <button onClick={() => login(true)}>visitor</button>
+            <Link to="/createaccount" >CreateAccount</Link>
             <div className="wrongAuth" id="authWrong"></div>
 
         </div>

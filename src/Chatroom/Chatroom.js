@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './Chatroom.css'
 
 
-function Chatroom({ setRoomID, roomID, chat, socket, updateChat, setUsername, username, ...props }) {
+function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, ...props }) {
     const [roomInfo, setRoomInfo] = useState(["empty"])
+    let username = accountInfo.username
     useEffect(() => {
         ready()
         return () => {

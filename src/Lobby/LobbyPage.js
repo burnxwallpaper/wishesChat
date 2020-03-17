@@ -1,22 +1,34 @@
 import React, { useEffect } from 'react';
 import './LobbyPage.css';
 import { render } from "react-dom";
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route, Redirect,
-    Link
-} from "react-router-dom";
 import CreateRoom from './CreateRoom'
-import { set } from 'mongoose';
 
-function LobbyPage({ setRoomID, socket, username, setFriendList, friendList, setOnlineUsers, onlineUsers, ...props }) {
-    function redirect(roomID) {
+
+function LobbyPage({ setChatRecord, setAccountInfo, setRoomID, socket, accountInfo, chatRecord, setOnlineUsers, onlineUsers, ...props }) {
+    let username = accountInfo.username
+    function redirect(roomID, privateRoom = false) {
         setRoomID(roomID)
-        props.history.push('/room')
+        privateRoom ?
+            props.history.push('/privateroom') :
+            props.history.push('/room')
     }
     function addFriend(username) {
-        socket.emit("sendFriendRequest", { username })
+        socket.emit("fdRequestSent", { username: username })
+    }
+
+    function acceptFriend(username) {
+        socket.emit("fdRequestAccept", { username: username })
+    }
+
+    function findRoomId(fdusername) {
+        let targetRoomID
+        for (let [roomID, roomInfo] of Object.entries(chatRecord)) {
+            if (roomInfo.roomType === "private" && roomInfo.users.includes(username) && roomInfo.users.includes(fdusername)) {
+                targetRoomID = roomID
+                break
+            }
+        }
+        return targetRoomID
     }
 
     useEffect(() => {
@@ -25,7 +37,6 @@ function LobbyPage({ setRoomID, socket, username, setFriendList, friendList, set
             let location = document.getElementById("roomList")
             let newRoomBtnGroup
             newRoomBtnGroup = Object.keys(roomList.roomInfo).map((roomID) => {
-                console.log(roomList.roomInfo[roomID])
                 return <div id={`room${roomID}`} key={`room${roomID}`} className="roombtn" onClick={() => redirect(roomID)}>
                     <div>Room {roomID}</div>
                     <div>Host:{roomList.roomHost[roomID]}</div>
@@ -36,31 +47,18 @@ function LobbyPage({ setRoomID, socket, username, setFriendList, friendList, set
         })
         socket.emit("requestUserListInfo")
         socket.on("userListUpdate", function (res) {
-            if (res.friendList) setFriendList(res.friendList)
             setOnlineUsers(res.usernameList)
-
-
-
-            /*let allUserListLocation = document.getElementById("allUserList")
-            let friendListLocation = document.getElementById("onlineFrinedList")
-            let fdList = []
-            let allUserList = res.usernameList.map((username) => {
-                return <div id={`user-${username}`} key={`user-${username}`} className="user">
-                    <div>{username}</div>
-                </div>
-            })
-            if (res.friendList) {
-                fdList = res.friendList.map((username) => {
-                    return <div id={`friend-${username}`} key={`friend-${username}`} className="friend">
-                        <div>{username}</div>
-                    </div>
-                })
-            }
-            allUserList.unshift(<div>Online Users:</div>)
-            fdList.unshift(<div>Friends:</div>)
-            render(allUserList, allUserListLocation);
-            render(fdList, friendListLocation);*/
         })
+        socket.on("chatRecordUpdate", (res) => {
+            console.log("chatRecordUpdate")
+            console.log(res.chatRecord)
+            setChatRecord(res.chatRecord)
+        })
+        socket.on("updateAccountInfo", (req) => {
+            setAccountInfo(req.accountInfo)
+        })
+        socket.on("newFdRequest", (req) => { console.log(req.requestor + " want to add you") })
+        socket.on("newFdAccept", (req) => { console.log(req.acceptor + " added you") })
 
         return () => { socket.removeAllListeners(); console.log("unmount lobby") }
     }, [])
@@ -73,7 +71,11 @@ function LobbyPage({ setRoomID, socket, username, setFriendList, friendList, set
                     {onlineUsers.map(
                         (username) => {
                             return <div id={`user-${username}`} key={`user-${username}`} className="user">
-                                <div>{username}</div>
+                                <div>{username}
+                                    {username !== accountInfo.username && <button onClick={() => addFriend(username)}>Add</button>}
+                                </div>
+
+
                             </div>
                         })}
                 </div>
@@ -81,20 +83,39 @@ function LobbyPage({ setRoomID, socket, username, setFriendList, friendList, set
                     <div>Friends:</div>
                     <div id="onlineFrinedList" className="onlineFriendContainer">
                         <div>Online:</div>
-                        {friendList.map((username) => {
+                        {accountInfo.friends.map((username) => {
                             if (onlineUsers.includes(username))
                                 return <div id={`onlineFriend-${username}`} key={`onlineFriend-${username}`} className="onlineFriend">
                                     <div>{username}</div>
+                                    <button onClick={() => redirect(findRoomId(username), true)}>chat</button>
                                 </div>
                         })}
                     </div>
                     <div id="offlineFrinedList" className="offlineFriendContainer">
                         <div>Offline:</div>
-                        {friendList.map((username) => {
+                        {accountInfo.friends.map((username) => {
                             if (!onlineUsers.includes(username))
                                 return <div id={`offlineFriend-${username}`} key={`offlineFriend-${username}`} className="offlineFriend">
                                     <div>{username}</div>
+                                    <button onClick={() => redirect(findRoomId(username), true)}>chat</button>
                                 </div>
+                        })}
+                    </div>
+                    <div id="fdRequestReceived">
+                        <div>fdRequestReceived:</div>
+                        {accountInfo.fdRequestReceived.map((username) => {
+                            return <div id={`fdRequestReceived-${username}`} key={`fdRequestReceived-${username}`}>
+                                {username}
+                                <button onClick={() => acceptFriend(username)}>Acccept</button>
+                            </div>
+                        })}
+                    </div>
+                    <div id="fdRequestSent">
+                        <div>fdRequestSent:</div>
+                        {accountInfo.fdRequestSent.map((username) => {
+                            return <div id={`fdRequestSent-${username}`} key={`fdRequestSent-${username}`}>
+                                {username}
+                            </div>
                         })}
                     </div>
                 </div>
