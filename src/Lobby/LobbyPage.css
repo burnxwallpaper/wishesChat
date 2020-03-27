@@ -1,45 +1,217 @@
 .LobbyPage{
     background-color: cornsilk;
     display: flex;
-    flex-direction: row;
+    justify-content: flex-start;
+    height: calc(100vh - 80px);
+    width: 100%;
+
 }
 
+.roomList{
+    height:100%;
+    width:100%;
+    overflow-y: auto;
+}
 .roombtn{
     cursor: pointer;
-    width:150px;
     height: 70px;
-    border: 1px groove black;
+    font-family: "Comic Sans MS", cursive, sans-serif;
     border-radius: 3px;
-    background-color: burlywood;
+    background: #78e047;
+    color: white;
+    box-shadow:  0px 4px 0px rgb(131, 194, 108);
     margin: 10px;
     text-align: left;
     padding-left: 15px;
+
+}
+.roombtn:hover{
+    background: #6eb44e;
+    box-shadow: 0px 2px 5px 2px rgb(131, 194, 108);
 }
 
 .createBtn{
     cursor: pointer;
-    width:70px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
     height: 50px;
-    border: 1px groove black;
     border-radius: 3px;
-    background-color: rgb(142, 185, 235);
     margin: 10px;
+    bottom:0;
+    right:0;
+    text-align: center;
+    background: #7fccde;
+    color: white;
+    box-shadow: 0px 4px 0px #73B9C9;
+    line-height: 50px;
 }
 
 .userList{
+    display: flex;
+    flex-direction: column;
     width: 200px;
-    height: 100vh;
+    bottom:0;
     background-color: cadetblue;
+
+    transition: 1s ease; 
+
+    
+}
+.hover-btn{
+    position: absolute;
+    right:0;
+    height: 100%;
+    width:10px;
+    display: none;
+    
+}
+
+#allUserList,#friendList{
+    text-align: left;
+    padding-left: 10px;
+}
+
+#profileIcon{
+    margin: 5px auto;
 }
 
 .offlineFriendContainer,.onlineFriendContainer{
     text-align: left;
     font-weight: 500;
-
+    overflow: hidden;
+    height:0;
 }
 
-.offlineFriend,.onlineFriend{
+.user{
+    height: 30px;
+}
 
+.friend{
+    cursor: pointer;
     font-weight: 100;
     text-align: left;
 }
+.friend :hover{
+    background-color: cyan;
+}
+
+.iconImg{
+    width:50px;
+    height:50px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    background-color: white;
+    background-size:cover;
+    margin: 10px auto;
+    
+}
+
+.othersIcon{
+    width:20px;
+    height:20px;
+    display: inline-block;
+}
+.othersIcon ~div{
+
+    display: inline-block;
+    font-size: 1.3em;
+    transform: translateY(-60%);
+    margin-left: 5px;
+}
+
+.fdStatusLabel{
+   cursor: pointer; 
+}
+
+.fdArrow{
+    transition: 0.5s;
+}
+ .rotate{
+    transform: rotate(90deg);
+
+}
+.friendPage{
+    width:100%
+}
+#allUserList{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+#userList h2{
+    margin: unset;
+}
+.onlineUserList{
+    flex: 1;
+    width: 100%;
+
+
+}
+#onlineUserTitle{
+    margin-top: 5px;
+    font-size: 1.25em;
+}
+@media screen and (max-width: 500px) {
+    .userList {
+        width:150px;
+        opacity:0.5;
+        padding-top: unset;
+        top:79px;
+        position: absolute;
+        transform: translateX(-90%);
+    }
+    .userList:hover{
+        transform: translateX(0);
+        opacity:0.9;
+    }
+    .roomList{
+        margin-left: 15px;
+    }
+    .hover-btn{
+        display: flex;
+        align-items: center;
+    }
+    .userList:hover .hover-btn{
+        display: none;
+    }
+  }
+
+@media screen and (max-width: 330px) {
+    .iconImg{
+        margin:0 auto;
+    }
+    .LobbyPage{
+        height: calc(100vh - 73px); 
+    }
+    .othersIcon ~div {
+        
+        transform: translateY(-30%);
+        margin-left: 5px;
+    }
+    .userList {
+        top:73px;
+        
+        font-size: 0.8em;
+    }
+    .createBtn{
+        height: 30px;
+        line-height: 30px !important;
+        font-size: 0.7em;
+    }
+    .roombtn{
+
+    height: 50px;
+    font-size: 0.7em;
+
+    }
+
+  }
+  @media screen and (max-width: 200px) {
+      .userList{
+        width: 130px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+      }
+  }
+
+ 

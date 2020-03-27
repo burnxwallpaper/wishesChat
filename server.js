@@ -55,6 +55,7 @@ function findSocketByName(username) {
   return soc
 }
 
+
 //start connect
 io.on('connection', function (socket) {
   console.log("someone connected" + times)
@@ -82,16 +83,39 @@ io.on('connection', function (socket) {
     return res
   }
 
-  async function findPrivateChatMsg() {
+  async function findPrivateChatMsg(soc) {
     let chatRecord = {}
-    for (let i = 0; i < socket.fdRooms.length; i++) {
-      let roomID = socket.fdRooms[i]
+    for (let i = 0; i < soc.fdRooms.length; i++) {
+      let roomID = soc.fdRooms[i]
       await FdRoom.findById(roomID, function (err, room) {
         if (err) throw err
         chatRecord[roomID] = room
       })
     }
     return chatRecord
+  }
+
+  async function findFdWithIcon() {
+    let fdListWithIcon = {}
+    for (let i = 0; i < socket.friends.length; i++) {
+      let fdName = socket.friends[i]
+      await Account.findOne({ username: fdName }, function (err, fd) {
+        if (err) throw err
+        fdListWithIcon[fdName] = fd.iconImage || ""
+      })
+    }
+    console.log(fdListWithIcon)
+    return fdListWithIcon
+  }
+  function findAllUsersIcon() {
+    let AllUsersIcon = {}
+    for (let i = 0; i < socketList.length; i++) {
+      let username = socketList[i].username
+      AllUsersIcon[username] = socketList[i].iconImage || ""
+
+    }
+    console.log(AllUsersIcon)
+    return AllUsersIcon
   }
   //login
   socket.on("login", async function (user) {
@@ -106,8 +130,9 @@ io.on('connection', function (socket) {
     else {
       socket.uid = userID
       socket.username = account.username
-      socket.friendList = account.friends
+      socket.friends = account.friends
       socket.fdRooms = account.fdRooms
+      socket.iconImage = account.iconImage
       socketList.push(socket)
       onlineUsers[userID] = user.username;
       userID++;
@@ -116,9 +141,19 @@ io.on('connection', function (socket) {
         usernameList.push(username)
         onlineCount++
       }
-      let chatRecord = await findPrivateChatMsg()
-      socket.emit("loginStatus", { loginStatus: true, accountInfo: account, chatRecord: chatRecord })
-      io.emit("userListUpdate", { usernameList })
+      let chatRecord = await findPrivateChatMsg(socket)
+      let fdListWithIcon = await findFdWithIcon()
+      let allUsersIcon = findAllUsersIcon()
+      socket.emit("loginStatus", { loginStatus: true, accountInfo: account, chatRecord: chatRecord, fdListWithIcon: fdListWithIcon, allUsersIcon: allUsersIcon })
+      socket.friends.map(async (username) => {
+        let onlineFdSocID = await findSocketIDByName(username)
+        if (onlineFdSocID) {
+          io.to(onlineFdSocID).emit("systemMsg", { msg: `${socket.username} is online` })
+        }
+      })
+
+
+      io.emit("userListUpdate", { usernameList: usernameList, allUsersIcon: allUsersIcon })
 
       console.log(onlineUsers)
       console.log("Login Success")
@@ -127,7 +162,7 @@ io.on('connection', function (socket) {
   })
 
   socket.on("requestRoomInfo", function () { socket.emit("roomListUpdate", { roomInfo, roomHost }) })
-  socket.on("requestUserListInfo", function () { socket.emit("userListUpdate", { friendList: socket.friendList, usernameList }) })
+  socket.on("requestUserListInfo", function () { socket.emit("userListUpdate", { friendList: socket.friends, usernameList }) })
 
 
   socket.on('join', function (user) {
@@ -145,16 +180,36 @@ io.on('connection', function (socket) {
     socket.on("chat", outputChatMsg)
   })
 
-  socket.on('joinPrivateChat', function (user) {
+  async function markMsgRead(roomID) {
+    await FdRoom.findById(roomID, async (err, room) => {
+      if (err) { console.log(err); return }
+      let unreadCount = 0
+      for (let i = 0; i < room.msg.length; i++) {
+        if ((room.msg[i].read !== true) && (room.msg[i].talker !== socket.username)) {
+          unreadCount++
+          room.msg[i].read = true;
+        }
+      }
+      room.markModified('msg');
+      if (unreadCount > 0) {
+        await room.save().then(async () => {
+          console.log("read done")
+          let msg = await findPrivateChatMsg(socket)
+          socket.emit("chatRecordUpdate", { chatRecord: msg })
+        })
+      }
+    })
+  }
+  socket.on("markMsgRead", () => markMsgRead(socket.roomID))
+  socket.on('joinPrivateChat', async function (user) {
     let roomID = user.roomID
-    socket.roomID = roomID;
     if (!roomID) { console.log("roomID not found"); return }
-    //if (!roomInfo[roomID]) roomInfo[roomID] = []
-    //roomInfo[roomID].push(socket.username)
+    socket.roomID = roomID;
     socket.join(roomID);
-    console.log(socket.username + '加入了房間' + roomID);
-    console.log(roomInfo);
+    markMsgRead(roomID)
     socket.on("chat", outputPrivateChatMsg)
+    console.log(socket.username + '加入了房間' + roomID);
+
   })
 
 
@@ -174,15 +229,20 @@ io.on('connection', function (socket) {
         {
           talker: socket.username,
           time: new Date(),
-          content: message.text
+          content: message.text,
+          read: false
         }
       )
+      room.markModified('msg')
       await room.save()
 
-      let msg = await findPrivateChatMsg()
+
+      let fdACmsg = await findPrivateChatMsg(socket)
       //socket.emit("chatRecordUpdate", { chatRecord: msg })
       for (let i = 0; i < roomUsers.length; i++) {
-        let fdSocketID = findSocketIDByName(roomUsers[i])
+        let fdSocketID = await findSocketIDByName(roomUsers[i])
+        let soc = await findSocketByName(roomUsers[i])
+        let msg = await findPrivateChatMsg(soc)
         io.to(fdSocketID).emit("chatRecordUpdate", { chatRecord: msg })
         console.log("msg sent to " + roomUsers[i])
       }
@@ -191,6 +251,7 @@ io.on('connection', function (socket) {
 
 
   }
+
 
   socket.on("createRoom", function (newRoomInfo) {
     let { roomID, username } = newRoomInfo
@@ -212,22 +273,36 @@ io.on('connection', function (socket) {
       if (err) throw err
       fdWantToAddAC = user
       if (!user.fdRequestReceived) { user.fdRequestReceived = [] }
-      user.fdRequestReceived.push(requestor)
-      user.save()
+      if (!user.fdRequestReceived.includes(requestor)) {
+        user.fdRequestReceived.push(requestor)
+        user.save().then(() => {
+          let fdSocketID = findSocketIDByName(fdWantToAdd)
+          if (fdSocketID) {
+            io.to(fdSocketID).emit("newFdRequest", { requestor: requestor })
+            io.to(fdSocketID).emit("updateAccountInfo", { accountInfo: fdWantToAddAC })
+            io.to(fdSocketID).emit("systemMsg", { msg: `You receive a friend request from ${requestor}.` })
+          }
+        })
+
+      } else { console.log(requestorAC + " already added " + fdWantToAdd) }
     })
     await Account.findOne({ username: requestor }, (err, user) => {
       if (err) throw err
       requestorAC = user
       if (!user.fdRequestSent) { user.fdRequestSent = [] }
-      user.fdRequestSent.push(fdWantToAdd)
-      user.save()
+      if (!user.fdRequestSent.includes(fdWantToAdd)) {
+        user.fdRequestSent.push(fdWantToAdd)
+        user.save().then(() => {
+          console.log(requestor + " want to add " + fdWantToAdd)
+          socket.emit("updateAccountInfo", { accountInfo: requestorAC })
+          socket.emit("systemMsg", { msg: `Friend request is sent to ${fdWantToAdd}!` })
+        })
+      } else {
+        socket.emit("systemMsg", { msg: `You request to ${fdWantToAdd} is sent before.` })
+      }
     })
-    let fdSocketID = findSocketIDByName(fdWantToAdd)
 
-    console.log(requestor + " want to add " + fdWantToAdd)
-    io.to(fdSocketID).emit("newFdRequest", { requestor: requestor })
-    io.to(fdSocketID).emit("updateAccountInfo", { accountInfo: fdWantToAddAC })
-    socket.emit("updateAccountInfo", { accountInfo: requestorAC })
+
   })
 
   socket.on("fdRequestAccept", async function (req) {
@@ -254,11 +329,11 @@ io.on('connection', function (socket) {
       acceptorAC = user
       user.save().then(
         async () => {
-          let chatRecord = await findPrivateChatMsg()
+          let chatRecord = await findPrivateChatMsg(socket)
           console.log(chatRecord)
           socket.emit("updateAccountInfo", { accountInfo: acceptorAC })
           socket.emit("chatRecordUpdate", { chatRecord: chatRecord })
-
+          socket.emit("systemMsg", { msg: `${fdWantToAccept} become your friend!` })
         }
       )
     })
@@ -269,19 +344,38 @@ io.on('connection', function (socket) {
       user.fdRequestSent.splice(index, 1)
       user.friends.push(acceptor)
       user.fdRooms.push(room._id.toString())
-      findSocketByName(fdWantToAccept).fdRooms.push(room._id.toString())
+      let Fdsocket = findSocketByName(fdWantToAccept)
+      if (Fdsocket) {
+        findSocketByName(fdWantToAccept).fdRooms.push(room._id.toString())
+      }
       fdWantToAcceptAC = user
       user.save().then(async () => {
-        let chatRecord = await findPrivateChatMsg()
-        console.log(chatRecord)
-        let fdSocketID = findSocketIDByName(fdWantToAccept)
-        io.to(fdSocketID).emit("newFdAccept", { acceptor: acceptor })
-        io.to(fdSocketID).emit("updateAccountInfo", { accountInfo: fdWantToAcceptAC })
-        io.to(fdSocketID).emit("chatRecordUpdate", { chatRecord: chatRecord })
+
+        if (Fdsocket) {
+          let chatRecord = await findPrivateChatMsg(Fdsocket)
+          console.log(chatRecord)
+          let fdSocketID = findSocketIDByName(fdWantToAccept)
+          io.to(fdSocketID).emit("newFdAccept", { acceptor: acceptor })
+          io.to(fdSocketID).emit("systemMsg", { msg: `${acceptor} become your friend!` })
+          io.to(fdSocketID).emit("updateAccountInfo", { accountInfo: fdWantToAcceptAC })
+          io.to(fdSocketID).emit("chatRecordUpdate", { chatRecord: chatRecord })
+        }
       })
     })
 
     console.log(acceptor + " added " + fdWantToAccept)
+  })
+
+  socket.on("updateIcon", async function (req) {
+    console.log(socket.username + " upload icon:" + req.imageURL)
+    await Account.findOne({ username: socket.username }, (err, user) => {
+      if (err) { console.log(err) }
+      user.iconImage = req.imageURL
+      user.save().then(() => {
+        console.log("updateSuccess");
+        socket.emit("updateAccountInfo", { accountInfo: user })
+      })
+    })
   })
 
   //leave room
@@ -336,6 +430,23 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function () {
     if (onlineUsers.hasOwnProperty(socket.uid)) {
       let user = { userID: socket.uid, username: onlineUsers[socket.uid] };
+      //remove socket from socketlist
+      for (i = 0; i < socketList.length; i++) {
+        if (socketList[i].username === onlineUsers[socket.uid]) {
+          //notice otherfd logout
+          socketList[i].friends.map(async (username) => {
+            if (usernameList.includes(username)) {
+              let onlineFdSocID = await findSocketIDByName(username)
+              if (onlineFdSocID) {
+                io.to(onlineFdSocID).emit("systemMsg", { msg: `${socket.username} is offline` })
+              }
+            }
+          })
+          socketList.splice(i, 1);
+          break;
+        }
+      }
+
 
       // 删掉这个用户，在线人数-1
       delete onlineUsers[socket.uid];

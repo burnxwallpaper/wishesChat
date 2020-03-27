@@ -1,16 +1,22 @@
 import React, { useEffect } from 'react';
 import './LobbyPage.css';
-import { render } from "react-dom";
-import CreateRoom from './CreateRoom'
+import SuccessNotify from '../Common/SuccessNotify'
+import MainLobby from './MainLobby'
+import Friends from './Friends'
+import SettingPage from './SettingPage'
 
 
-function LobbyPage({ setChatRecord, setAccountInfo, setRoomID, socket, accountInfo, chatRecord, setOnlineUsers, onlineUsers, ...props }) {
+function LobbyPage({ setChatRecord, setRoomList, setCurrentPage, currentPage, fdListWithIcon, setChatTargetInfo,
+    setAllUsersIcon, allUsersIcon,
+    roomList, setAccountInfo, setRoomID, socket, accountInfo, chatRecord, setOnlineUsers, onlineUsers, ...props }) {
     let username = accountInfo.username
-    function redirect(roomID, privateRoom = false) {
+
+    function redirect(roomID, privateRoom = false, fdInfo = {}) {
         setRoomID(roomID)
-        privateRoom ?
-            props.history.push('/privateroom') :
-            props.history.push('/room')
+        if (privateRoom) {
+            setChatTargetInfo(fdInfo)
+            props.history.push('/privateroom')
+        } else { props.history.push('/room') }
     }
     function addFriend(username) {
         socket.emit("fdRequestSent", { username: username })
@@ -34,96 +40,49 @@ function LobbyPage({ setChatRecord, setAccountInfo, setRoomID, socket, accountIn
     useEffect(() => {
         socket.emit("requestRoomInfo")
         socket.on("roomListUpdate", function (roomList) {
-            let location = document.getElementById("roomList")
-            let newRoomBtnGroup
-            newRoomBtnGroup = Object.keys(roomList.roomInfo).map((roomID) => {
-                return <div id={`room${roomID}`} key={`room${roomID}`} className="roombtn" onClick={() => redirect(roomID)}>
-                    <div>Room {roomID}</div>
-                    <div>Host:{roomList.roomHost[roomID]}</div>
-                    <div>Users Count:{roomList.roomInfo[roomID].length}</div>
-                </div>
-            })
-            render(newRoomBtnGroup, location);
+            console.log("roomListUpdate")
+            setRoomList(roomList)
         })
         socket.emit("requestUserListInfo")
         socket.on("userListUpdate", function (res) {
+            console.log("userListUpdate")
+            if (res.allUsersIcon) setAllUsersIcon(res.allUsersIcon)
             setOnlineUsers(res.usernameList)
         })
         socket.on("chatRecordUpdate", (res) => {
             console.log("chatRecordUpdate")
             console.log(res.chatRecord)
+
             setChatRecord(res.chatRecord)
         })
         socket.on("updateAccountInfo", (req) => {
+            console.log("updateAccountInfo")
             setAccountInfo(req.accountInfo)
         })
         socket.on("newFdRequest", (req) => { console.log(req.requestor + " want to add you") })
         socket.on("newFdAccept", (req) => { console.log(req.acceptor + " added you") })
-
+        socket.on("systemMsg", (res) => {
+            console.log(res.msg)
+            SuccessNotify(res.msg)
+        })
         return () => { socket.removeAllListeners(); console.log("unmount lobby") }
     }, [])
 
     return (
         <div id="lobbyPage" className="LobbyPage">
-            <div id="userList" className="userList">
-                <div id="allUserList">
-                    <div>Online Users:</div>
-                    {onlineUsers.map(
-                        (username) => {
-                            return <div id={`user-${username}`} key={`user-${username}`} className="user">
-                                <div>{username}
-                                    {username !== accountInfo.username && <button onClick={() => addFriend(username)}>Add</button>}
-                                </div>
 
 
-                            </div>
-                        })}
-                </div>
-                <div id="friendList">
-                    <div>Friends:</div>
-                    <div id="onlineFrinedList" className="onlineFriendContainer">
-                        <div>Online:</div>
-                        {accountInfo.friends.map((username) => {
-                            if (onlineUsers.includes(username))
-                                return <div id={`onlineFriend-${username}`} key={`onlineFriend-${username}`} className="onlineFriend">
-                                    <div>{username}</div>
-                                    <button onClick={() => redirect(findRoomId(username), true)}>chat</button>
-                                </div>
-                        })}
-                    </div>
-                    <div id="offlineFrinedList" className="offlineFriendContainer">
-                        <div>Offline:</div>
-                        {accountInfo.friends.map((username) => {
-                            if (!onlineUsers.includes(username))
-                                return <div id={`offlineFriend-${username}`} key={`offlineFriend-${username}`} className="offlineFriend">
-                                    <div>{username}</div>
-                                    <button onClick={() => redirect(findRoomId(username), true)}>chat</button>
-                                </div>
-                        })}
-                    </div>
-                    <div id="fdRequestReceived">
-                        <div>fdRequestReceived:</div>
-                        {accountInfo.fdRequestReceived.map((username) => {
-                            return <div id={`fdRequestReceived-${username}`} key={`fdRequestReceived-${username}`}>
-                                {username}
-                                <button onClick={() => acceptFriend(username)}>Acccept</button>
-                            </div>
-                        })}
-                    </div>
-                    <div id="fdRequestSent">
-                        <div>fdRequestSent:</div>
-                        {accountInfo.fdRequestSent.map((username) => {
-                            return <div id={`fdRequestSent-${username}`} key={`fdRequestSent-${username}`}>
-                                {username}
-                            </div>
-                        })}
-                    </div>
-                </div>
+            {currentPage === "mainLobby" ?
+                <MainLobby roomList={roomList} findRoomId={findRoomId} acceptFriend={acceptFriend} addFriend={addFriend}
+                    redirect={redirect} accountInfo={accountInfo} onlineUsers={onlineUsers} fdListWithIcon={fdListWithIcon}
+                    socket={socket} props={props} setRoomID={setRoomID} allUsersIcon={allUsersIcon}
+                /> :
+                currentPage === "friends" ?
+                    <div className="friendPage"><Friends accountInfo={accountInfo} fdListWithIcon={fdListWithIcon} redirect={redirect} findRoomId={findRoomId} chatRecord={chatRecord} /></div>
+                    : <SettingPage socket={socket} accountInfo={accountInfo} />
+            }
 
-            </div>
 
-            <div id="roomList"></div>
-            <div className="createBtn" onClick={() => CreateRoom(setRoomID, props, socket, username)}>Create</div>
 
         </div>
     )

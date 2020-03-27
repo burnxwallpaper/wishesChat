@@ -1,20 +1,22 @@
 
 import './freeze.css';
-function freeze(freeze = true) {
+function freeze(freeze = true, superfreeze = false) {
 
     var div = document.createElement("div");
     if (freeze) {
-        if (document.getElementById("freezelayer")) {
-            document.getElementById("freezelayer").classList += "overlay";
-            return
-        }
+        if (document.getElementById("freezelayer")) return
         div.id = "freezelayer"
-        div.className += "overlay";
+
+        superfreeze ?
+            div.className = "superOverlay"
+            : div.className = "overlay"
         document.body.appendChild(div);
     }
 
-
-    if (!freeze) document.getElementById("freezelayer").classList.remove("overlay")
+    else {
+        let freezelayer = document.getElementById("freezelayer")
+        freezelayer.parentNode.removeChild(freezelayer)
+    }
 }
 
 export default freeze;

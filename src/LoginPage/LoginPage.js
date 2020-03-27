@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import './LoginPage.css'
-import freeze from '../Common/freeze'
 import {
     BrowserRouter as Router,
     Switch,
     Route, Redirect,
     Link
 } from "react-router-dom";
-function LoginPage({ socket, setAccountInfo, setChatRecord, ...props }) {
+function LoginPage({ socket, setAccountInfo, setChatRecord, setAllUsersIcon, setFdListWithIcon, ...props }) {
     useEffect(() => {
+
         socket.emit('disconnect')
         socket.removeAllListeners()
         setAccountInfo(null)
@@ -33,10 +33,12 @@ function LoginPage({ socket, setAccountInfo, setChatRecord, ...props }) {
         })
         socket.on("loginStatus", function (status) {
             if (status.loginStatus) {
+                setAllUsersIcon(status.allUsersIcon)
                 setAccountInfo(status.accountInfo)
                 setChatRecord(status.chatRecord)
-                console.log(status.chatRecord)
-                freeze(false);
+                setFdListWithIcon(status.fdListWithIcon)
+
+                console.log(status.allUsersIcon)
                 return props.history.push('/')
             }
             else {
@@ -52,7 +54,6 @@ function LoginPage({ socket, setAccountInfo, setChatRecord, ...props }) {
 
     }
 
-    freeze()
     return (
         <div className="loginPage">
             Please Login

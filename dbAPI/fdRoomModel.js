@@ -5,8 +5,9 @@ const { Schema } = mongoose;
 const fdRoomModel = new Schema(
     {
         users: { type: Array },
-        msg: { type: Array },
+        msg: { type: {} },
         roomType: { type: String },
+
     }
 )
 

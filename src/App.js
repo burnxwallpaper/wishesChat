@@ -11,6 +11,7 @@ import PrivateChatroom from './Chatroom/PrivateChatroom'
 import LobbyPage from './Lobby/LobbyPage'
 import LoginPage from './LoginPage/LoginPage'
 import CreateAccountPage from './CreateAccountPage/CreateAccountPage'
+import Header from './Header/Header'
 
 function App() {
   const [socket, setSocket] = useState()
@@ -18,43 +19,56 @@ function App() {
   const [onlineUsers, setOnlineUsers] = useState([])
   const [chatRecord, setChatRecord] = useState([])
   const [roomID, setRoomID] = useState()
+  const [roomList, setRoomList] = useState()
+  const [currentPage, setCurrentPage] = useState("mainLobby")
+  const [fdListWithIcon, setFdListWithIcon] = useState()
+  const [allUsersIcon, setAllUsersIcon] = useState()
+  const [chat, updateChat] = useState([])
+  const [chatTargetInfo, setChatTargetInfo] = useState()
   const history = useHistory();
+
   if (!socket) {
     console.log("connect socket")
     const io = require('socket.io-client')
     setSocket(io("ws://localhost:4000"))
   }
-  const [chat, updateChat] = useState([])
+
 
   useEffect(() => {
-    console.log("login success")
-  }, [accountInfo])
+    console.log(allUsersIcon)
+  }, [allUsersIcon])
 
 
 
   return (
 
     <div className="App">
-      <div className="login">
-        <div id="userCount"></div>
+      <div>
+        {accountInfo && <Header history={history} accountInfo={accountInfo} socket={socket}
+          setCurrentPage={setCurrentPage} setRoomID={setRoomID} updateChat={updateChat} />}
         <Switch>
           <Route path="/createaccount" render={(props) =>
             <CreateAccountPage {...props} socket={socket} />}
           />
           <Route path="/login" render={(props) =>
-            <LoginPage {...props} socket={socket} setAccountInfo={setAccountInfo} setChatRecord={setChatRecord} />}
+            <LoginPage {...props} setAllUsersIcon={setAllUsersIcon}
+              socket={socket} setAccountInfo={setAccountInfo} setChatRecord={setChatRecord} setFdListWithIcon={setFdListWithIcon} />}
           />
           {(!accountInfo) && <Redirect to={{ pathname: "/login", }} />}
           <Route exact path="/" render={(props) =>
-            <LobbyPage {...props} setRoomID={setRoomID} socket={socket} accountInfo={accountInfo} setAccountInfo={setAccountInfo}
+            <LobbyPage {...props} setChatTargetInfo={setChatTargetInfo} allUsersIcon={allUsersIcon} setAllUsersIcon={setAllUsersIcon}
+              setCurrentPage={setCurrentPage} currentPage={currentPage} fdListWithIcon={fdListWithIcon}
+              setRoomList={setRoomList} roomList={roomList} setRoomID={setRoomID} socket={socket} accountInfo={accountInfo} setAccountInfo={setAccountInfo}
               onlineUsers={onlineUsers} setOnlineUsers={setOnlineUsers} chatRecord={chatRecord} setChatRecord={setChatRecord}
             />}
           />
           <Route path="/room" render={(props) =>
-            <Chatroom {...props} setRoomID={setRoomID} roomID={roomID} chat={chat} socket={socket} updateChat={updateChat} accountInfo={accountInfo} />}
+            <Chatroom {...props} allUsersIcon={allUsersIcon}
+              setRoomID={setRoomID} roomID={roomID} chat={chat} socket={socket} updateChat={updateChat} accountInfo={accountInfo} />}
           />
           <Route path="/privateroom" render={(props) =>
-            <PrivateChatroom {...props} setChatRecord={setChatRecord} chatRecord={chatRecord} setRoomID={setRoomID} roomID={roomID} chat={chat} socket={socket} updateChat={updateChat} accountInfo={accountInfo} />}
+            <PrivateChatroom {...props} chatTargetInfo={chatTargetInfo}
+              setChatRecord={setChatRecord} chatRecord={chatRecord} setRoomID={setRoomID} roomID={roomID} chat={chat} socket={socket} updateChat={updateChat} accountInfo={accountInfo} />}
           />
           <Route render={() => <div>Page Not Found</div>} />
         </Switch>

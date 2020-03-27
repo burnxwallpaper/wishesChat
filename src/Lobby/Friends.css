@@ -1,0 +1,92 @@
+.friendPage{
+    overflow-y: auto;
+}
+
+.eachfriend{
+    border-bottom: 1px groove rgb(218, 204, 204);
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    padding: 5px 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.lastMsg{
+
+    color: gray;
+    align-self:flex-end;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
+}
+.previewMsg{
+
+    padding-top: 8px;
+    padding-left: 5px;
+    overflow-x: visible;
+    text-overflow: clip;
+    max-width: 100px;
+    
+}
+
+.inFriendPage {
+    margin: 0 10px;
+
+}
+
+.lastMsgDate{
+    padding-top: 8px;
+    margin-left: auto;
+    padding-right: 10px;
+    color: gray;
+
+}
+
+.unreadMsgCount{
+    position: absolute;
+    color: rgb(246, 253, 246);
+    box-shadow: 0px 1px 2px 1px rgb(126, 109, 109);
+    margin-left: 6px;
+    border-radius: 50%;
+    background-color: rgb(127, 209, 3);
+    height: 18px;
+    width: 18px;
+    line-height: 18px;
+    padding-top: unset !important;
+    padding-left: unset  !important;
+    text-align: center;
+    font-size: 8px;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+@media screen and (max-width: 272px) {
+   .lastMsgDate{
+    padding-top: 0px;
+   }
+    .previewMsg{
+        padding-top: 0px;
+    padding-left: 0px;
+        max-width: 70px;
+    }
+  }
+
+  @media screen and (max-width: 272px) {
+   
+    .friendPage{
+        font-size: 0.8em;
+    }
+    .previewMsg{
+        max-width: 50px;
+    }
+    .inFriendPage {
+        width: 30px;
+        height:30px;
+    }
+    .unreadMsgCount{
+        width: 13px;
+        height:13px;
+        line-height: 15px;
+    }
+  }

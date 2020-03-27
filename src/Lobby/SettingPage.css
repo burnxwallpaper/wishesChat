@@ -1,0 +1,163 @@
+.settingPage{
+    padding-top: 30px;
+    width: 100%;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 30px;
+
+}
+
+.previewIcon{  
+    height: 100%;   
+}
+
+#preview{
+    border-radius: 50%;
+    border: 1px solid transparent;
+    overflow:hidden;
+    width: 100px;
+    height:100px;
+    background-color: teal;
+}
+.modal-trim {
+    overflow: hidden;
+    position: relative;
+  	/* 马赛克背景图 */
+    background-image: url(https://s10.mogucdn.com/mlcdn/c45406/190723_3afckd96l9h4fh6lcb56117cld176_503x503.jpg);
+    background-size: cover;
+
+    
+}
+.modal-trim canvas {
+    cursor: default;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+
+#mycanvas{
+    background-color: orange;
+    width:100%;
+    height:100%;
+    margin: 0 auto;
+    display: block;
+
+
+}
+
+.inSetting{
+    height: 150px;
+    width: 150px;
+    border: 2px solid rgb(14, 218, 218);
+    box-shadow: 0 0px 3px 3px rgb(202, 185, 185);
+
+}
+
+#resizeCanvas,#finishTrim{
+    display: none;
+}
+
+
+#previewIconCanvas{
+    
+
+    background-color: rgb(195, 243, 168);
+}
+
+.iconImgArea{
+    position: relative;
+}
+
+.settingPage label{
+    bottom: 0;
+    transform:translateX(50%);
+    position: absolute;
+    background-color: rgb(20, 148, 135);
+    border-radius: 50%;
+    width: 37px;
+    height:40px;
+    font-size: 23px;
+    line-height: 40px;
+    padding-left: 3px;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0px 0px 2px 2px grey;
+}
+
+.settingPage label:hover{
+    background-color: rgb(28, 199, 182);
+    box-shadow: 0px 0px 3px 3px rgb(184, 177, 177);
+}
+
+.settingPage input{
+display: none;
+}
+
+.fa-edit{
+    padding-top: 5px;
+}
+
+#wrapper{
+    border-radius: 50%;
+    border:2px solid rgb(148, 231, 241);
+    width:200px;
+    height:200px;
+    overflow: hidden;
+    display: none;
+    margin: 0 auto;
+}
+
+
+
+
+.btn-back,.btn-trim,.btn-upload{
+    display: none;
+    border: 1px solid grey;
+    border-radius:3px;
+    width: 70px;
+    margin: 0 5px;
+
+}
+
+#trimCanvasArea{
+    width: 320px;
+    position: absolute;
+    margin: 0 auto;
+    display: none;
+    z-index: 99;
+    left:50%;
+    transform: translateX(-50%);
+    top:30px;
+}
+#trimCanvasArea> div:first-of-type{
+    text-align: right;
+}
+#btn-cancel{
+    width: 30px;
+    height:30px;
+    border-radius: 50%;
+    margin-right: 5px;
+
+    cursor: pointer;
+    border: 2px solid rgb(181, 224, 224);
+    box-shadow: 0px 0px 1px 1px grey;
+}
+#btn-cancel:hover,.btn-back:hover,.btn-trim:hover,.btn-upload:hover{
+    box-shadow: 0px 0px 2px 2px grey;
+}
+#previewIconCanvas{
+
+
+
+}
+@media screen and (max-width: 300px) {
+    #trimCanvasArea{
+        top:0;
+
+        width:100%;
+        height: 100%;
+    }
+    
+}
+

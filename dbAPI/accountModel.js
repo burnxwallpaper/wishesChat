@@ -11,6 +11,7 @@ const accountModel = new Schema(
         fdRooms: { type: Array },
         fdRequestReceived: { type: Array },
         fdRequestSent: { type: Array },
+        iconImage: { type: String }
     }
 )
 

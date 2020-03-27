@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 //import './PrivateChatroom.css'
+import InputBox from '../Common/InputBox'
 
-
-function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateChat, setChatRecord, accountInfo, ...props }) {
+function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateChat, setChatRecord, accountInfo, chatTargetInfo, ...props }) {
     let username = accountInfo.username
-    let fdRoomList = accountInfo.fdRooms
     useEffect(() => {
         ready()
+
         return () => {
             socket.emit('leave', { username: username, roomID: roomID });
             console.log("unmount")
@@ -26,10 +26,12 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
                 text: allmsg[i].content
             })
         }
+
         updateChat(allmsgTemp)
 
 
         socket.on("broadcast", function (newMessage) {
+            console.log("broadcast")
             updateChat(prev => !prev ? [newMessage] : [...prev, newMessage])
             //scoll to bottom when new message comes
             document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
@@ -37,6 +39,7 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
         socket.on("chatRecordUpdate", (res) => {
             console.log("chatRecordUpdate")
             setChatRecord(res.chatRecord)
+            socket.emit("markMsgRead")
         })
     }
     function handleSubmit(e) {
@@ -55,29 +58,28 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
         messages = chat.map(message => {
             messageCount++
             return <div
-                className={message.username === username ? "ownMsg" : "othersMsg"}
-                key={messageCount}>{`${message.username} says: ${message.text}`}
+                className={message.username === username ? "msg ownMsg" : "msg othersMsg"}
+                key={messageCount}>
+                {message.username !== username && <div style={{ color: "blue" }}>{message.username}</div>}
+                <div>{message.text}</div>
+
             </div>
-
         })
-
 
     return (
         <>
+            <div className="chatRoomName">
+                <div className="iconImg inChatRoom" style={{ backgroundImage: `url(${chatTargetInfo.icon})` }}></div>
+                <div>
+                    {chatTargetInfo.username}
+                </div>
+            </div>
             <div className="chatRoom">
-                <div>Welcome, you are in room {`${roomID}`}</div>
+
                 <div id="chat-messsages">{messages}</div>
             </div>
-            <form onSubmit={handleSubmit}>
-                <label>Text</label>
-                <input id="inputMessage"></input>
-                <input type="submit" value="Submit"></input>
-            </form>
-            <button onClick={() => {
-                setRoomID("0")
-                if (chat) { updateChat(prev => { prev.length = 0; console.log("leave") }) }
-                props.history.push('/')
-            }}>leave</button>
+            <InputBox handleSubmit={handleSubmit} />
+
         </>
     )
 }

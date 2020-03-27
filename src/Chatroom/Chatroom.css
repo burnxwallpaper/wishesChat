@@ -1,17 +1,162 @@
 .chatRoom{
-
-    
-    height: 80vh;
+    position: fixed;
+    width: 100%;
+    max-width: 798px;
+    top:140px;
+    bottom: 50px;
     border: 1px black groove;
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: white;
+}
+.adminMsg{
+    background-color: rgb(187, 245, 121);
 }
 
+.chatRoomName{
+    height: 57px;
+    display: flex;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-size: 25px;
+    justify-content: center;
+    background-color: teal;
+    align-items: center;
+    padding: 3px 0;
+}
+
+.iconImg.inChatRoom{
+    margin:unset;
+} 
+.userList.inChatRoom{
+    top:0;
+    width:130px;
+    position: absolute;
+    transform: translateX(-100%);
+    z-index: 99;
+    text-align: left;
+    padding-left: 10px;
+    overflow-y:auto ;
+   word-wrap: break-word;
+
+}
+.userList.inChatRoom.translateX100{
+    transform: translateX(0);
+    opacity:1;
+}
+.hoverPull {
+    cursor: pointer;
+    margin: 0 auto;
+    font-family: "Comic Sans MS", cursive, sans-serif;
+    color: black;
+    cursor: pointer;
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-bottom: 3px;
+    opacity: 1;
+    transition: 0.5s;
+    font-size: 15px;
+    width: 100px;
+    background-color: rgb(91, 204, 241);
+    border-radius: 10px 10px 10px 10px;   
+
+}
+.hoverPull.clicked{
+    background-color: rgb(187, 230, 245);
+    box-shadow: 0px 1px 4px 4px grey;
+}
+.hoverPull .fas.fa-users {
+    margin-left: 2px;
+    font-size: 1.5em;
+}
+#userListInChatRoom button{
+
+    display: block;
+    width:25px;
+    right: 0;
+}
+@media screen and (max-width: 330px) {
+    .chatRoom {
+        top:117px;
+    }
+
+    .chatRoomName{
+        height: 38px;
+        font-size: 15px;
+    }
+    .iconImg.inChatRoom{
+        margin:unset;
+        width:35px;
+        height: 35px;
+    } 
+    .hoverPull {
+        font-size: 0.7em;
+    }
+    .hoverPull:hover{
+        left:109px;
+    }
+    .userList.inChatRoom{
+        width:100px
+    }
+}
+
+#chat-messsages{
+    font-size: 1.2rem;
+    display: flex;
+    flex-direction:column
+}
+
+
+.msg{
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    max-width: 200px;
+    margin: 3px 0;
+    word-wrap: break-word;
+    text-align: left;
+    padding:3px;
+    background-color: #45e6c3;
+}
+
+.msg:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	bottom:5px;
+	width: 0;
+	height: 0;
+	border: 13px solid transparent;
+	border-left-color: #45e6c3;
+	border-right: 0;
+	border-bottom: 0;
+	margin-top: -18.5px;
+	margin-right: -13px;
+}
+
+.othersMsg:after{
+    content: '';
+	position: absolute;
+	left: 0;
+	bottom:5px;
+	width: 0;
+	height: 0;
+	border: 13px solid transparent;
+	border-right-color: #45e6c3;
+	border-left: 0;
+	border-bottom: 0;
+	margin-top: -18.5px;
+	margin-left: -13px;
+}
 .ownMsg{
-    text-align: right;
+
+    align-self: flex-end;
+    margin-right: 13px;
+
 }
 
 .othersMsg{
-    text-align: left;
+    align-self: flex-start;
+    margin-left: 13px;
 }
 
 .adminMsg{

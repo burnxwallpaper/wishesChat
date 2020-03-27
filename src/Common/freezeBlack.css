@@ -1,0 +1,11 @@
+.overlayBlack {
+    background-color:rgb(15, 2, 2);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 98;
+    top: 0px;
+    left: 0px;
+    opacity: .9; /* in FireFox */ 
+    filter: alpha(opacity=50); /* in IE */
+}
