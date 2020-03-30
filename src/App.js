@@ -29,7 +29,7 @@ function App() {
   if (!socket) {
     console.log("connect socket")
     const io = require('socket.io-client')
-    setSocket(io("http://wisheschatroomapi.herokuapp.com/"))
+    setSocket(io("https://wisheschatroomapi.herokuapp.com/"))
   }
 
   /*
