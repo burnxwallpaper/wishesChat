@@ -2,7 +2,7 @@
     position: fixed;
     width: 100%;
     max-width: 798px;
-    top:140px;
+    top:135px;
     bottom: 50px;
     border: 1px black groove;
     overflow-y: auto;
@@ -21,7 +21,8 @@
     justify-content: center;
     background-color: teal;
     align-items: center;
-    padding: 3px 0;
+    color: white;
+
 }
 
 .iconImg.inChatRoom{
