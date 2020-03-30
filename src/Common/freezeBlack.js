@@ -13,7 +13,6 @@ function freezeBlack(freeze = true) {
         document.body.appendChild(div);
     }
 
-
     if (!freeze) document.getElementById("freezelayerBlack").classList.remove("overlayBlack")
 }
 

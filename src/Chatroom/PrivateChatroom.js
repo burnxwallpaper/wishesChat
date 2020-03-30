@@ -29,7 +29,6 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
 
         updateChat(allmsgTemp)
 
-
         socket.on("broadcast", function (newMessage) {
             console.log("broadcast")
             updateChat(prev => !prev ? [newMessage] : [...prev, newMessage])
@@ -51,11 +50,11 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
 
     }
 
-
     let messageCount = 0
     let messages = <div></div>
     if (!chat) { messages = "" } else
         messages = chat.map(message => {
+            if (message.username === "admin") { return }
             messageCount++
             return <div
                 className={message.username === username ? "msg ownMsg" : "msg othersMsg"}
@@ -75,11 +74,9 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
                 </div>
             </div>
             <div className="chatRoom">
-
                 <div id="chat-messsages">{messages}</div>
             </div>
             <InputBox handleSubmit={handleSubmit} />
-
         </>
     )
 }

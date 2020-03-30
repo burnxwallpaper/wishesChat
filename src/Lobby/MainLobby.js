@@ -1,11 +1,9 @@
 import React from 'react';
 import CreateRoom from './CreateRoom'
-function MainLobby({ socket, allUsersIcon, fdListWithIcon, roomList, setRoomID, props, redirect, accountInfo, onlineUsers, findRoomId, acceptFriend, addFriend }) {
+function MainLobby({ socket, allUsersIcon, roomList, setRoomID, props, redirect, accountInfo, onlineUsers, findRoomId, acceptFriend, addFriend }) {
     let newRoomGroup
-
     let defaultIcon = "https://www.pngfind.com/pngs/m/93-938050_png-file-transparent-white-user-icon-png-download.png"
     if (!roomList) { newRoomGroup = <></> }
-
     else newRoomGroup = Object.keys(roomList.roomInfo).map((roomID) => {
         return <div id={`room${roomID}`} key={`room${roomID}`} className="roombtn" onClick={() => redirect(roomID)}>
             <div>Room {roomID}</div>
@@ -15,17 +13,15 @@ function MainLobby({ socket, allUsersIcon, fdListWithIcon, roomList, setRoomID, 
     })
     return (
         <>
-
             <div id="userList" className="userList">
                 <div className="hover-btn"><i className="fas fa-caret-right"></i></div>
                 <div >
-                    <div id="profileIcon" className="iconImg" style={{ backgroundImage: `url(${(accountInfo && accountInfo.iconImage) || defaultIcon})` }}></div>
-
+                    <div id="profileIcon" className="iconImg"
+                        style={{ backgroundImage: `url(${(accountInfo && accountInfo.iconImage) || defaultIcon})` }}></div>
                     <div><h2>{accountInfo.username}</h2></div>
                 </div>
                 <div id="onlineUserTitle">Online Users:</div>
                 <div id="allUserList">
-
                     <div className="onlineUserList">
                         {onlineUsers.map(
                             (username) => {
@@ -35,21 +31,15 @@ function MainLobby({ socket, allUsersIcon, fdListWithIcon, roomList, setRoomID, 
                                         {!accountInfo.friends.includes(username) && username !== "遊客" && accountInfo.username !== "遊客" && accountInfo.username !== username
                                             && <i onClick={() => addFriend(username)} className="fas fa-user-plus"></i>}
                                     </div>
-
-
                                 </div>
                             })}
                     </div>
                 </div>
-
-
             </div>
-
             <div className="roomList">
-                <div className="createBtn btn-gradient blue" onClick={() => CreateRoom(setRoomID, props, socket, accountInfo.username)}>Create</div>
+                <div className="createBtn" onClick={() => CreateRoom(setRoomID, props, socket, accountInfo.username)}>Create</div>
                 {newRoomGroup}
             </div>
-
         </>
     )
 }

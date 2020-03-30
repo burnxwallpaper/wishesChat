@@ -1,44 +1,38 @@
 import React, { useEffect } from 'react';
 import './LoginPage.css'
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route, Redirect,
-    Link
-} from "react-router-dom";
-function LoginPage({ socket, setAccountInfo, setChatRecord, setAllUsersIcon, setFdListWithIcon, ...props }) {
+//import { Link } from "react-router-dom";
+import Spinner from '../Common/Spinner'
+function LoginPage({ socket, setAccountInfo, accountInfo, setChatRecord, setAllUsersIcon, setFdListWithIcon, ...props }) {
     useEffect(() => {
-
-        socket.emit('disconnect')
-        socket.removeAllListeners()
+        if (accountInfo) {
+            window.location.reload()
+        }
         setAccountInfo(null)
-    }, []
-    )
-
+    }, [])
 
     function login(visitor = false) {
         socket.removeAllListeners()
+        Spinner()
         let username, password
-        if (visitor) {
-            username = "遊客";
-            password = "遊客"
-        } else {
-            username = document.getElementById("inputName").value;
-            password = document.getElementById("inputPassword").value
-        }
+        /*if (visitor) {
+            username = "visitor";
+            password = "visitor"
+        } else {*/
+        username = document.getElementById("inputName").value;
+        password = document.getElementById("inputPassword").value
+        //}
 
         socket.emit("login", {
             username: username,
             password: password
         })
         socket.on("loginStatus", function (status) {
+            Spinner(false)
             if (status.loginStatus) {
                 setAllUsersIcon(status.allUsersIcon)
                 setAccountInfo(status.accountInfo)
                 setChatRecord(status.chatRecord)
                 setFdListWithIcon(status.fdListWithIcon)
-
-                console.log(status.allUsersIcon)
                 return props.history.push('/')
             }
             else {
@@ -48,23 +42,23 @@ function LoginPage({ socket, setAccountInfo, setChatRecord, setAllUsersIcon, set
                 document.getElementById("authWrong").classList.add("wrongAuth")
             }
         })
-
-
-
-
     }
-
+    //<Link to="/createaccount" >CreateAccount</Link>
     return (
         <div className="loginPage">
-            Please Login
-            <br></br>
-            <label>Username: </label>
-            <input id="inputName"></input>
-            <label>Password: </label>
-            <input id="inputPassword"></input>
-            <button onClick={() => login(false)}>Login</button>
-            <button onClick={() => login(true)}>visitor</button>
-            <Link to="/createaccount" >CreateAccount</Link>
+            <span id="loginLabel">Login</span>
+            <span className="tooltipac" title="username from `aaa` to `ddd`, pw is same ;  ( e.g. username = `bbb`; pw=`bbb`)" >Test account info</span>
+            <div className="form-field">
+                <label htmlFor="inputName">Username: </label>
+                <input id="inputName" type="text" name="username" className="form-field" required></input>
+            </div>
+            <div className="form-field">
+                <label htmlFor="inputPassword">Password: </label>
+                <input id="inputPassword" type="password" name="password" className="form-field" required></input>
+            </div>
+
+            <button className="loginBtn" onClick={() => login(false)}>Login</button>
+
             <div className="wrongAuth" id="authWrong"></div>
 
         </div>

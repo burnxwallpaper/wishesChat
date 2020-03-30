@@ -105,7 +105,6 @@
     flex-direction:column
 }
 
-
 .msg{
     position: relative;
     border: 1px solid transparent;
@@ -148,10 +147,8 @@
 	margin-left: -13px;
 }
 .ownMsg{
-
     align-self: flex-end;
     margin-right: 13px;
-
 }
 
 .othersMsg{

@@ -30,6 +30,5 @@ function CreateAccountPage({ socket, ...props }) {
             <button onClick={() => createAccount()}>Create</button>
         </div>
     )
-
 }
 export default CreateAccountPage;

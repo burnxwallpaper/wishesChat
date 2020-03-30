@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { render } from "react-dom";
 import './CreateRoom.css';
 import freeze from '../Common/freeze'
@@ -34,12 +34,6 @@ function CreateRoom(setRoomID, props, socket, username) {
         freeze(false)
     }
     render(createWindow, location);
-
-
-
-
-
-
 }
 
 export default CreateRoom

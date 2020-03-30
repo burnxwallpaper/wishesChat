@@ -65,16 +65,12 @@ function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, al
                 </div>
                 :
                 <div className="adminMsg" key={messageCount}>{`${message.user.username} ${message.join ? "joined" : "leaved"}`}</div>
-
-
-
         })
 
     let defaultIcon = "https://www.pngfind.com/pngs/m/93-938050_png-file-transparent-white-user-icon-png-download.png"
     return (
         <>
             <div className="chatRoomName">
-
                 <div id="hoverPull" className="hoverPull" onClick={() => {
                     let listClassList = document.getElementById("userListInChatRoom").classList
                     if (listClassList.contains("translateX100")) {
@@ -92,11 +88,7 @@ function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, al
                 </div>
             </div>
             <div className="chatRoom publicChatRoom">
-
-
-
                 <div id="userListInChatRoom" className="userList inChatRoom">
-
                     {roomInfo.map(
                         (user) => {
                             let { username, iconImage } = user
@@ -111,12 +103,8 @@ function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, al
                                 </div>
                             )
                         })}
-
-
                 </div>
-
                 <div id="chat-messsages">{messages}</div>
-
             </div>
             <InputBox handleSubmit={handleSubmit} />
         </>

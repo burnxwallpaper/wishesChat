@@ -3,7 +3,6 @@
     width: 100%;
     font-family: "Comic Sans MS", cursive, sans-serif;
     font-size: 30px;
-
 }
 
 .previewIcon{  
@@ -21,11 +20,9 @@
 .modal-trim {
     overflow: hidden;
     position: relative;
-  	/* 马赛克背景图 */
+  	/* trimbackground*/
     background-image: url(https://s10.mogucdn.com/mlcdn/c45406/190723_3afckd96l9h4fh6lcb56117cld176_503x503.jpg);
-    background-size: cover;
-
-    
+    background-size: cover; 
 }
 .modal-trim canvas {
     cursor: default;
@@ -35,15 +32,12 @@
     transform: translate(-50%,-50%);
 }
 
-
 #mycanvas{
     background-color: orange;
     width:100%;
     height:100%;
     margin: 0 auto;
     display: block;
-
-
 }
 
 .inSetting{
@@ -51,17 +45,13 @@
     width: 150px;
     border: 2px solid rgb(14, 218, 218);
     box-shadow: 0 0px 3px 3px rgb(202, 185, 185);
-
 }
 
 #resizeCanvas,#finishTrim{
     display: none;
 }
 
-
 #previewIconCanvas{
-    
-
     background-color: rgb(195, 243, 168);
 }
 
@@ -108,16 +98,12 @@ display: none;
     margin: 0 auto;
 }
 
-
-
-
 .btn-back,.btn-trim,.btn-upload{
     display: none;
     border: 1px solid grey;
     border-radius:3px;
     width: 70px;
     margin: 0 5px;
-
 }
 
 #trimCanvasArea{
@@ -138,7 +124,6 @@ display: none;
     height:30px;
     border-radius: 50%;
     margin-right: 5px;
-
     cursor: pointer;
     border: 2px solid rgb(181, 224, 224);
     box-shadow: 0px 0px 1px 1px grey;
@@ -146,18 +131,12 @@ display: none;
 #btn-cancel:hover,.btn-back:hover,.btn-trim:hover,.btn-upload:hover{
     box-shadow: 0px 0px 2px 2px grey;
 }
-#previewIconCanvas{
 
-
-
-}
 @media screen and (max-width: 300px) {
     #trimCanvasArea{
         top:0;
-
         width:100%;
         height: 100%;
     }
-    
 }
 

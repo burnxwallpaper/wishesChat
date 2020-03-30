@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import {
-  BrowserRouter as Router,
   Switch,
   Route, Redirect, useHistory,
-  Link
 } from "react-router-dom";
 import Chatroom from './Chatroom/Chatroom'
 import PrivateChatroom from './Chatroom/PrivateChatroom'
 import LobbyPage from './Lobby/LobbyPage'
 import LoginPage from './LoginPage/LoginPage'
-import CreateAccountPage from './CreateAccountPage/CreateAccountPage'
+//import CreateAccountPage from './CreateAccountPage/CreateAccountPage'
 import Header from './Header/Header'
 
 function App() {
@@ -26,20 +24,19 @@ function App() {
   const [chat, updateChat] = useState([])
   const [chatTargetInfo, setChatTargetInfo] = useState()
   const history = useHistory();
+  //let devSer = "ws://localhost:4000"
 
   if (!socket) {
     console.log("connect socket")
     const io = require('socket.io-client')
-    setSocket(io("ws://localhost:4000"))
+    setSocket(io("http://wisheschatroomapi.herokuapp.com/"))
   }
 
-
-  useEffect(() => {
-    console.log(allUsersIcon)
-  }, [allUsersIcon])
-
-
-
+  /*
+  <Route path="/createaccount" render={(props) =>
+              <CreateAccountPage {...props} socket={socket} />}
+            />
+  */
   return (
 
     <div className="App">
@@ -47,11 +44,9 @@ function App() {
         {accountInfo && <Header history={history} accountInfo={accountInfo} socket={socket}
           setCurrentPage={setCurrentPage} setRoomID={setRoomID} updateChat={updateChat} />}
         <Switch>
-          <Route path="/createaccount" render={(props) =>
-            <CreateAccountPage {...props} socket={socket} />}
-          />
+
           <Route path="/login" render={(props) =>
-            <LoginPage {...props} setAllUsersIcon={setAllUsersIcon}
+            <LoginPage {...props} setAllUsersIcon={setAllUsersIcon} accountInfo={accountInfo}
               socket={socket} setAccountInfo={setAccountInfo} setChatRecord={setChatRecord} setFdListWithIcon={setFdListWithIcon} />}
           />
           {(!accountInfo) && <Redirect to={{ pathname: "/login", }} />}

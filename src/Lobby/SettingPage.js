@@ -4,7 +4,6 @@ import freezeBlack from '../Common/freezeBlack'
 import Spinner from '../Common/Spinner'
 
 function SettingPage({ socket, accountInfo }) {
-
     const [mouse, setMouse] = useState(
         {
             dragging: false,
@@ -32,16 +31,21 @@ function SettingPage({ socket, accountInfo }) {
                 let image = new Image();
                 image.onload = function () {
                     console.log(document.documentElement.clientWidth)
+                    //responsive
                     let maxCanvasWidth = Math.min(document.documentElement.clientWidth, 300)
+                    //take longer side and resize image
                     this.canvasImgRatio = maxCanvasWidth / Math.max(this.width, this.height)
                     console.log(this.width + 'x' + this.height + ";Canvas-Img ratio:" + this.canvasImgRatio);
                     image.crossOrigin = 'Anonymous'
                     setImage(image)
+                    //display canvas
                     let trimCanvasWrapper = document.getElementById("trimCanvasArea")
                     trimCanvasWrapper.style.display = "unset";
                     let trimBtn = document.getElementById("btn-trim")
                     trimBtn.style.display = "inline-block";
+                    //filter freeze
                     freezeBlack()
+                    //initialize canvas
                     clearDraw()
                     let canvas = document.getElementById("mycanvas")
                     canvas.width = this.width * this.canvasImgRatio
@@ -49,7 +53,7 @@ function SettingPage({ socket, accountInfo }) {
                     canvas.style.maxWidth = this.width * this.canvasImgRatio + "px"
                     canvas.style.maxHeight = this.height * this.canvasImgRatio + "px"
                     canvas.style.display = "block"
-
+                    //draw
                     draw(image, this.width * this.canvasImgRatio, this.height * this.canvasImgRatio)
                 }
                 image.src = e.target.result
@@ -67,11 +71,9 @@ function SettingPage({ socket, accountInfo }) {
     function draw(image, width, height) {
         let c = document.getElementById("mycanvas");
         let ctx = c.getContext("2d");
-
         ctx.drawImage(image, 0, 0, width, height);
-
     }
-
+    //judge the mouse offset if it is to move the trim area
     function moveRule(e) {
         let mouseX = e.nativeEvent.offsetX,
             mouseY = e.nativeEvent.offsetY,
@@ -87,7 +89,7 @@ function SettingPage({ socket, accountInfo }) {
         //trimXStart:${trimXStart},trimYStart:${trimYStart},trimXEnd:${trimXEnd},trimYEnd:${trimYEnd},x:${mouseX},y:${mouseY}`)
         if (condition1 && condition2) return true
     }
-
+    // resize judge
     function resizeRule(e) {
         let mouseX = e.nativeEvent.offsetX,
             mouseY = e.nativeEvent.offsetY,
@@ -123,8 +125,9 @@ function SettingPage({ socket, accountInfo }) {
         }
         else return false
     }
+    //mousedown
     function mouseDownEvent(e) {
-
+        //for touch event, if touch, only drag event will be fired
         var rect = e.target.getBoundingClientRect();
         let touchX
         let touchY
@@ -171,7 +174,7 @@ function SettingPage({ socket, accountInfo }) {
         }
     }
 
-    // 移动事件
+    // mousemove
     function mouseMoveEvent(e) {
         var rect = e.target.getBoundingClientRect();
         let touchX
@@ -192,7 +195,7 @@ function SettingPage({ socket, accountInfo }) {
                 let tempStartY = trimPosition.startY;
                 let tempHeight = trimPosition.height;
                 let tempWidth = trimPosition.width;
-
+                // +2 = judgement area range
                 if (mouse.startX > tempStartX + 2) { tempWidth = trimPosition.width + ((e.nativeEvent.offsetX || touchX) - mouse.startX) }
                 else {
                     tempStartX = e.nativeEvent.offsetX || touchX
@@ -203,9 +206,10 @@ function SettingPage({ socket, accountInfo }) {
                     tempStartY = e.nativeEvent.offsetY || touchY
                     tempHeight = trimPosition.height + ((-e.nativeEvent.offsetY || touchY) + mouse.startY)
                 }
-
-                tempStartX = Math.min(tempStartX, 300);
-                tempStartY = Math.min(tempStartY, 300);
+                let maxX = image.canvasImgRatio * image.width
+                let maxY = image.canvasImgRatio * image.height
+                tempStartX = Math.min(tempStartX, maxX);
+                tempStartY = Math.min(tempStartY, maxY);
                 drawTrim(tempStartX, tempStartY, tempWidth, tempHeight, ctx)
                 return
             }
@@ -416,8 +420,6 @@ function SettingPage({ socket, accountInfo }) {
         //resize to desired size
         previewIconCanvas.style.width = (width > height ? 200 * (width / height) : 200) + "px"
         previewIconCanvas.style.height = (height > width ? 200 * (height / width) : 200) + "px"
-
-
     }
 
     function upload() {
@@ -499,14 +501,11 @@ function SettingPage({ socket, accountInfo }) {
             </div>
             <div>Name:{accountInfo.username}</div>
 
-            <input type="file" id="file-uploader" data-target="file-uploader" accept="image/*" multiple="multiple" onChange={handleFiles} />
-
-
+            <input type="file" id="file-uploader" data-target="file-uploader"
+                accept="image/*" multiple="multiple" onChange={handleFiles} />
             <div id="trimCanvasArea">
                 <div><button id="btn-cancel" onClick={cancelTrim}>X</button></div>
-
                 <canvas id="mycanvas"
-
                     onMouseDown={mouseDownEvent}
                     onMouseMove={mouseMoveEvent}
                     onMouseUp={mouseRemoveEvent}
@@ -515,26 +514,14 @@ function SettingPage({ socket, accountInfo }) {
                     onTouchEnd={mouseRemoveEvent}
                 ></canvas>
                 <div id="wrapper">
-                    <canvas id="previewIconCanvas">
-
-                    </canvas>
+                    <canvas id="previewIconCanvas"></canvas>
                 </div>
                 <button id="btn-trim" className="btn-trim" onClick={() => getTrim()}>Trim {`&`} preview</button>
                 <button id="btn-back" className="btn-back" onClick={() => backToTrim()}>Back</button>
                 <button id="btn-upload" className="btn-upload" onClick={() => upload()}>upload</button>
-
-
             </div>
-            <canvas id="resizeCanvas">
-
-            </canvas>
-            <canvas id="finishTrim"
-                width="300"
-                height="300">
-            </canvas>
-
-
-
+            <canvas id="resizeCanvas"></canvas>
+            <canvas id="finishTrim" width="300" height="300"></canvas>
         </div>
     )
 }

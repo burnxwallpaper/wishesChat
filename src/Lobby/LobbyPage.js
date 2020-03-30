@@ -70,8 +70,6 @@ function LobbyPage({ setChatRecord, setRoomList, setCurrentPage, currentPage, fd
 
     return (
         <div id="lobbyPage" className="LobbyPage">
-
-
             {currentPage === "mainLobby" ?
                 <MainLobby roomList={roomList} findRoomId={findRoomId} acceptFriend={acceptFriend} addFriend={addFriend}
                     redirect={redirect} accountInfo={accountInfo} onlineUsers={onlineUsers} fdListWithIcon={fdListWithIcon}
@@ -81,9 +79,6 @@ function LobbyPage({ setChatRecord, setRoomList, setCurrentPage, currentPage, fd
                     <div className="friendPage"><Friends accountInfo={accountInfo} fdListWithIcon={fdListWithIcon} redirect={redirect} findRoomId={findRoomId} chatRecord={chatRecord} /></div>
                     : <SettingPage socket={socket} accountInfo={accountInfo} />
             }
-
-
-
         </div>
     )
 }

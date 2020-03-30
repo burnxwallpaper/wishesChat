@@ -24,7 +24,6 @@ function MailBox({ accountInfo, setMailBox, socket }) {
             {accountInfo.fdRequestReceived.length === 0 && <div>You have 0 friend request</div>}
         </div>
     )
-
 }
 
 export default MailBox

@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 const port = process.env.PORT || 4000;
 //db
 const mongoose = require('mongoose');
-const DB_URL = 'mongodb://localhost:27017/chatroomAPI'
+const DB_URL = "mongodb+srv://cheukheisiu:970204leo@eshopapi-m0cdc.mongodb.net/chatroomAPI?retryWrites=true&w=majority" || 'mongodb://localhost:27017/chatroomAPI'
 const db = mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 const Account = require('./dbAPI/accountModel');
 const FdRoom = require('./dbAPI/fdRoomModel');

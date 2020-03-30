@@ -19,6 +19,7 @@
     align-self:flex-end;
     overflow-x: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 
 }
 .previewMsg{

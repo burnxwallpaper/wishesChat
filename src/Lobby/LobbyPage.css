@@ -74,6 +74,10 @@
     margin: 5px auto;
 }
 
+.fa.fa-user-plus{
+    cursor: pointer;
+}
+
 .offlineFriendContainer,.onlineFriendContainer{
     text-align: left;
     font-weight: 500;
