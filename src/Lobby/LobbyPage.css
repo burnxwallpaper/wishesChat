@@ -157,10 +157,11 @@
 }
 @media screen and (max-width: 500px) {
     .userList {
+
         width:150px;
         opacity:0.5;
         padding-top: unset;
-        top:79px;
+        top:75px;
         position: absolute;
         transform: translateX(-90%);
     }
