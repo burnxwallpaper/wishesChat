@@ -59,7 +59,7 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
             return <div
                 className={message.username === username ? "msg ownMsg" : "msg othersMsg"}
                 key={messageCount}>
-                {message.username !== username && <div style={{ color: "blue" }}>{message.username}</div>}
+                {/*message.username !== username && <div style={{ color: "blue" }}>{message.username}</div>*/}
                 <div>{message.text}</div>
 
             </div>

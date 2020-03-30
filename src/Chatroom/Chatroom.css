@@ -14,13 +14,13 @@
 }
 
 .chatRoomName{
-    height: 57px;
+    height: 60px;
     display: flex;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: "Comic Sans MS", Arial, sans-serif;
     font-size: 25px;
     justify-content: center;
-    background-color: teal;
     align-items: center;
+    background-color: teal;
     color: white;
 
 }
@@ -45,9 +45,10 @@
     opacity:1;
 }
 .hoverPull {
+
     cursor: pointer;
     margin: 0 auto;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: "Comic Sans MS", Arial, sans-serif;
     color: black;
     cursor: pointer;
     padding-right: 5px;
@@ -57,6 +58,8 @@
     transition: 0.5s;
     font-size: 15px;
     width: 100px;
+
+    padding-top: 0;
     background-color: rgb(91, 204, 241);
     border-radius: 10px 10px 10px 10px;   
 
@@ -77,11 +80,11 @@
 }
 @media screen and (max-width: 330px) {
     .chatRoom {
-        top:117px;
+        top:120px;
     }
 
     .chatRoomName{
-        height: 38px;
+        height: 54px;
         font-size: 15px;
     }
     .iconImg.inChatRoom{
@@ -91,6 +94,8 @@
     } 
     .hoverPull {
         font-size: 0.7em;
+        height: 32px;
+        transform: translateY(-10%);
     }
     .hoverPull:hover{
         left:109px;

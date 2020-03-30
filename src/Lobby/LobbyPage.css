@@ -15,7 +15,7 @@
 .roombtn{
     cursor: pointer;
     height: 70px;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: "Comic Sans MS", Arial, sans-serif;
     border-radius: 3px;
     background: #78e047;
     color: white;
@@ -32,7 +32,7 @@
 
 .createBtn{
     cursor: pointer;
-    font-family: "Comic Sans MS", cursive, sans-serif;
+    font-family: "Comic Sans MS", Arial, sans-serif;
     height: 50px;
     border-radius: 3px;
     margin: 10px;
@@ -161,7 +161,7 @@
         width:150px;
         opacity:0.5;
         padding-top: unset;
-        top:75px;
+        top:70px;
         position: absolute;
         transform: translateX(-90%);
     }
