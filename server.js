@@ -40,7 +40,7 @@ function findSocketIDByName(username) {
       break
     }
   }
-  if (!targetID) { console.log("terget ID not found") }
+  if (!targetID) { console.log("target ID not found") }
   return targetID
 }
 function findSocketByName(username) {
@@ -121,6 +121,12 @@ io.on('connection', function (socket) {
   socket.on("login", async function (user) {
     if (!user.username) { console.log("user.username not found"); return }
     let account = await auth(user.username, user.password)
+    /*if (usernameList.includes(account.username)) {
+      let soc = await findSocketByName(account.username)
+      soc.emit("systemMsg", { msg: "Other login" })
+      soc.emit("forceLogout", { forceLogout: true })
+      soc.disconnect()
+    }*/
     if (!account) {
       console.log("Login fail");
       socket.emit("loginStatus", { loginStatus: false })
@@ -255,6 +261,12 @@ io.on('connection', function (socket) {
 
   socket.on("createRoom", function (newRoomInfo) {
     let { roomID, username } = newRoomInfo
+    if (Object.keys(roomInfo).includes(roomID)) {
+      socket.emit('systemMsg', { msg: `Room name has been used, please change another one` })
+      console.log("repeated room")
+      return
+    }
+    socket.emit('systemMsg', { success: true })
     roomInfo[roomID] = [];
     roomHost[roomID] = username;
     io.emit('roomListUpdate', { roomInfo, roomHost });

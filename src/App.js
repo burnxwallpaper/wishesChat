@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import {
   Switch,
@@ -24,13 +24,32 @@ function App() {
   const [chat, updateChat] = useState([])
   const [chatTargetInfo, setChatTargetInfo] = useState()
   const history = useHistory();
-  //let devSer = "ws://localhost:4000"
-
+  let devSer = "ws://localhost:4000"
   if (!socket) {
     console.log("connect socket")
     const io = require('socket.io-client')
-    setSocket(io("https://wisheschatroomapi.herokuapp.com/"))
+    if (process.env.NODE_ENV === "development") {
+      setSocket(io(devSer))
+    }
+    else { setSocket(io("https://wisheschatroomapi.herokuapp.com/")) }
+
   }
+
+  useEffect(() => {
+    if (socket) {
+      console.log("check socket connect")
+      socket.on("forceLogout", function (res) {
+        console.log(res)
+        setAccountInfo(null)
+      })
+      socket.on('disconnect', function () {
+        console.log("disconect")
+      });
+    }
+
+  }, [socket])
+
+
 
   /*
   <Route path="/createaccount" render={(props) =>

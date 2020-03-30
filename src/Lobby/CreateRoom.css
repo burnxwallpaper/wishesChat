@@ -1,16 +1,55 @@
 .CreatRoom{
     width:200px;
     height:150px;
-    border: 1px groove black;
+    border: 1px groove rgb(0, 92, 167);
     border-radius: 3px;
-    background-color: burlywood;
+    background-color: rgb(136, 206, 233);
     z-index: 99;
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
     top:50px;
+    box-shadow: 0px 0px 5px 2px grey;
 }
 
 .close{
-    border: 1px groove black;
+    color: whitesmoke;
+    border-bottom: 1px groove black;
+    background-color: rgb(12, 104, 165);
+    border-bottom: 1px groove transparent;
+    box-shadow: 0px 0px 1px 1px rgb(0, 92, 167);
+}
+.close:hover{
+    background-color: rgb(39, 140, 207);
+}
+.CreatRoom form{
+    margin-top: 10px;
+}
+#createRoomID{
+    border-radius: 2px;
+    border: 1px solid grey;
+    height: 20px;
+}
+
+.CreatRoom input[type=submit]{
+    border: 1px solid transparent;
+    box-shadow: 0px 0px 1px 1px grey;
+    border-radius: 3px;
+    cursor: pointer;
+    width:100px;
+    margin-top: 30px;
+}
+.CreatRoom input[type=submit]:hover{
+    box-shadow: 0px 0px 1px 2px grey;
+}
+
+@media screen and (max-width: 210px) {
+    .CreatRoom{
+        width: 150px;
+    }
+    #createRoomID{
+        display: block;
+        margin: 0 auto;
+        width: 130px;
+    }
 }

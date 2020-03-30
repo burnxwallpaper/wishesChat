@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Header.css';
 import { Link } from "react-router-dom";
 import MailBox from './MailBox'
-function Header({ setCurrentPage, updateChat, setRoomID, accountInfo, history, socket }) {
+function Header({ setCurrentPage, setRoomID, accountInfo, history, socket }) {
     const [mailBox, setMailBox] = useState(false)
     function setPage(page) {
         setRoomID("0")

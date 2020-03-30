@@ -11,11 +11,11 @@ function CreateRoom(setRoomID, props, socket, username) {
 
     let createWindow =
         <div className="CreatRoom">
-            <div className="close btn" onClick={closeWindow}>close</div>
+            <div className="close btn" onClick={closeWindow}>Close</div>
             <form onSubmit={createRoom}>
-                Please enter room name
-            <input id="createRoomID"></input>
-                <input type="submit" value="Submit"></input>
+                Please enter room name:
+            <input id="createRoomID" maxLength="6"></input>
+                <input type="submit" value="Create"></input>
             </form>
         </div>
 
@@ -23,9 +23,14 @@ function CreateRoom(setRoomID, props, socket, username) {
         e.preventDefault()
         let roomID = document.getElementById("createRoomID").value;
         socket.emit("createRoom", { roomID: roomID, username: username })
-        setRoomID(roomID);
-        closeWindow()
-        props.history.push('/room')
+        socket.once("systemMsg", (res) => {
+            if (res.success) {
+                setRoomID(roomID);
+                closeWindow()
+                props.history.push('/room')
+            }
+        })
+
 
     }
 
