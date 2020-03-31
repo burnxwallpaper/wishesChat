@@ -29,9 +29,10 @@
     margin:unset;
 } 
 .userList.inChatRoom{
-    top:0;
+    top:135px;
+    bottom: 50px;
     width:130px;
-    position: absolute;
+    position:fixed;
     transform: translateX(-100%);
     z-index: 99;
     text-align: left;
@@ -101,7 +102,8 @@
         left:109px;
     }
     .userList.inChatRoom{
-        width:100px
+        width:100px;
+        top:120px;
     }
 }
 
