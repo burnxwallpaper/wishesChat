@@ -15,6 +15,7 @@ function Spinner(spinShow = true) {
 
     else {
         let spinner = document.getElementById("spinner1")
+        if (!spinner) return
         freeze(false);
         spinner.parentNode.removeChild(spinner);
     }

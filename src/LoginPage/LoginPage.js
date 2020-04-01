@@ -10,7 +10,8 @@ function LoginPage({ socket, setAccountInfo, accountInfo, setChatRecord, setAllU
         setAccountInfo(null)
     }, [])
 
-    function login(visitor = false) {
+    function login(e) {
+        e.preventDefault()
         //socket.removeAllListeners()
         Spinner()
         let username, password
@@ -50,7 +51,7 @@ function LoginPage({ socket, setAccountInfo, accountInfo, setChatRecord, setAllU
     //<Link to="/createaccount" >CreateAccount</Link>
     return (
         <div >
-            <form className="loginPage" onSubmit={() => { login(false) }}>
+            <form className="loginPage" onSubmit={login}>
                 <span id="loginLabel">Login</span>
                 <span className="tooltipac" title="username from `aaa` to `ddd`, pw is the same ;  ( e.g. username = `bbb`; pw=`bbb`)" >Test account info</span>
                 <div className="form-field">

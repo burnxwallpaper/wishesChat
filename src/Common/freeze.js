@@ -14,7 +14,9 @@ function freeze(freeze = true, superfreeze = false) {
     }
 
     else {
+
         let freezelayer = document.getElementById("freezelayer")
+        if (!freezelayer) return
         freezelayer.parentNode.removeChild(freezelayer)
     }
 }

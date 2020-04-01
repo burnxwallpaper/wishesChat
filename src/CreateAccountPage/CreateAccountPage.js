@@ -9,7 +9,8 @@ function CreateAccountPage({ socket, ...props }) {
     }, []
     )
 
-    function createAccount() {
+    function createAccount(e) {
+        e.preventDefault()
         Spinner()
         socket.removeAllListeners()
         let username = document.getElementById("inputName").value;
@@ -39,7 +40,7 @@ function CreateAccountPage({ socket, ...props }) {
     }
     return (
         <div >
-            <form className="loginPage" onSubmit={() => { createAccount() }}>
+            <form className="loginPage" onSubmit={createAccount}>
                 <span id="loginLabel">New Account</span>
                 <br></br>
                 <div className="form-field">
