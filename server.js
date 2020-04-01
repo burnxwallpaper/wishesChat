@@ -1,13 +1,32 @@
 const app = require('express')();
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
 const port = process.env.PORT || 4000;
-//db
+const server = require('http').createServer(app);
+const io = require('socket.io')(server, { origins: '*:*' });
 const mongoose = require('mongoose');
-const DB_URL = "mongodb+srv://cheukheisiu:970204leo@eshopapi-m0cdc.mongodb.net/chatroomAPI?retryWrites=true&w=majority" || 'mongodb://localhost:27017/chatroomAPI'
+const DB_URL = process.env.MONGODB_URI || 'mongodb://localhost:27017/chatroomAPI'
 const db = mongoose.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
 const Account = require('./dbAPI/accountModel');
 const FdRoom = require('./dbAPI/fdRoomModel');
+
+io.origins((origin, callback) => {
+  /*if (origin !== 'https://wisheschatroom.herokuapp.com') {
+    console.log("'origin not allowed'")
+    return callback('origin not allowed', false);
+  }*/
+  console.log(origin)
+  callback(null, true);
+});
+
+app.use((req, res, next) => {
+  res.set({
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": " GET,PUT,POST,DELETE,OPTIONS",
+    "Access-Control-Allow-Headers": "*",
+    //"Access-Control-Allow-Credentials": "true",
+    //"Content-Type": "text/html"
+  })
+  next()
+})
 
 app.get('/', function (req, res) {
   res.send('Hello World!');
@@ -40,7 +59,6 @@ function findSocketIDByName(username) {
       break
     }
   }
-  if (!targetID) { console.log("target ID not found") }
   return targetID
 }
 function findSocketByName(username) {
@@ -51,7 +69,10 @@ function findSocketByName(username) {
       break
     }
   }
-  if (!soc) { console.log("Socket not found") }
+  if (!soc) {
+    soc = false
+    console.log("Socket not found")
+  }
   return soc
 }
 
@@ -104,7 +125,6 @@ io.on('connection', function (socket) {
         fdListWithIcon[fdName] = fd.iconImage || ""
       })
     }
-    console.log(fdListWithIcon)
     return fdListWithIcon
   }
   function findAllUsersIcon() {
@@ -114,19 +134,18 @@ io.on('connection', function (socket) {
       AllUsersIcon[username] = socketList[i].iconImage || ""
 
     }
-    console.log(AllUsersIcon)
     return AllUsersIcon
   }
   //login
   socket.on("login", async function (user) {
     if (!user.username) { console.log("user.username not found"); return }
     let account = await auth(user.username, user.password)
-    /*if (usernameList.includes(account.username)) {
-      let soc = await findSocketByName(account.username)
-      soc.emit("systemMsg", { msg: "Other login" })
-      soc.emit("forceLogout", { forceLogout: true })
-      soc.disconnect()
-    }*/
+    //check repeated login,force logout if so
+    let socExist = await findSocketByName(user.username)
+    if (socExist) {
+      console.log("forceLogout")
+      socExist.disconnect()
+    }
     if (!account) {
       console.log("Login fail");
       socket.emit("loginStatus", { loginStatus: false })
@@ -158,11 +177,9 @@ io.on('connection', function (socket) {
         }
       })
 
-
       io.emit("userListUpdate", { usernameList: usernameList, allUsersIcon: allUsersIcon })
-
       console.log(onlineUsers)
-      console.log("Login Success")
+      console.log(account.username + " login Success")
       console.log(account.username + '加入了,人數:' + onlineCount + ",成員:" + usernameList.toString());
     }
   })
@@ -406,7 +423,6 @@ io.on('connection', function (socket) {
       io.to(roomID).emit('roomInfo', { userList: roomInfo[roomID] });
       if (roomHost[roomID] === user.username) {
 
-
         //change host
         if (roomInfo[roomID].length > 0) {
           roomHost[roomID] = roomInfo[roomID][0]
@@ -423,7 +439,22 @@ io.on('connection', function (socket) {
   })
 
   //creatAccount
-  socket.on('createAccount', function (accountInfo) {
+  socket.on('createAccount', async function (accountInfo) {
+    async function validRepeatCheck() {
+      let validCheck
+      await Account.findOne({ username: accountInfo.username }, (err, user) => {
+        if (err) { console.log(err) }
+        if (user) { validCheck = false }
+        else { validCheck = true }
+      })
+      return validCheck
+    }
+    let valid = await validRepeatCheck()
+    if (!valid) {
+      socket.emit("createAccount", { success: false })
+      console.log("repeated user")
+      return
+    }
     let account = new Account({
       username: accountInfo.username,
       password: accountInfo.password,
@@ -434,7 +465,7 @@ io.on('connection', function (socket) {
       fdRequestSent: [],
     })
     account.save().then(() => {
-      socket.emit("createAccountSuccess")
+      socket.emit("createAccount", { success: true })
     })
   })
 
@@ -442,6 +473,17 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function () {
     if (onlineUsers.hasOwnProperty(socket.uid)) {
       let user = { userID: socket.uid, username: onlineUsers[socket.uid] };
+      let roomid = socket.roomID;
+      if (roomHost[roomid] === user.username) {
+
+        //change host
+        if (roomInfo[roomid].length > 0) {
+          roomHost[roomid] = roomInfo[roomid][0]
+        }
+        //delete room if no one
+        else { delete roomInfo[roomid] }
+
+      }
       //remove socket from socketlist
       for (i = 0; i < socketList.length; i++) {
         if (socketList[i].username === onlineUsers[socket.uid]) {
@@ -479,7 +521,7 @@ io.on('connection', function (socket) {
 });
 
 
-http.listen(port, function () {
+server.listen(port, function () {
   console.log('listening on ' + port);
 });
 

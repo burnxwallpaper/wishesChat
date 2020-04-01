@@ -23,6 +23,7 @@ function SettingPage({ socket, accountInfo }) {
     function handleFiles(e) {
         let file = e.target.files[0]
         var imageType = /image.*/;
+        if (!file) { return }
         if (!file.type.match(imageType)) { console.log("invalid file type"); return }
         let reader = new FileReader();
         reader.readAsDataURL(file);

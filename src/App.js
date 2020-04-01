@@ -8,8 +8,9 @@ import Chatroom from './Chatroom/Chatroom'
 import PrivateChatroom from './Chatroom/PrivateChatroom'
 import LobbyPage from './Lobby/LobbyPage'
 import LoginPage from './LoginPage/LoginPage'
-//import CreateAccountPage from './CreateAccountPage/CreateAccountPage'
+import CreateAccountPage from './CreateAccountPage/CreateAccountPage'
 import Header from './Header/Header'
+import Popup from './Common/Popup'
 
 function App() {
   const [socket, setSocket] = useState()
@@ -24,38 +25,22 @@ function App() {
   const [chat, updateChat] = useState([])
   const [chatTargetInfo, setChatTargetInfo] = useState()
   const history = useHistory();
-  //let devSer = "ws://localhost:4000"
+  let devSer = "ws://localhost:4000"
   if (!socket) {
     console.log("connect socket")
     const io = require('socket.io-client')
+    setSocket(io(devSer))
 
-    //setSocket(io(devSer))
-
-    setSocket(io("https://wisheschatroomapi.herokuapp.com/"))
-
+    //setSocket(io("https://wisheschatroomapi.herokuapp.com/"))
   }
-
   useEffect(() => {
     if (socket) {
-      console.log("check socket connect")
-      socket.on("forceLogout", function (res) {
-        console.log(res)
-        setAccountInfo(null)
+      socket.on('disconnect', () => {
+        Popup()
       })
-      socket.on('disconnect', function () {
-        console.log("disconect")
-      });
     }
-
   }, [socket])
 
-
-
-  /*
-  <Route path="/createaccount" render={(props) =>
-              <CreateAccountPage {...props} socket={socket} />}
-            />
-  */
   return (
 
     <div className="App">
@@ -67,6 +52,9 @@ function App() {
           <Route path="/login" render={(props) =>
             <LoginPage {...props} setAllUsersIcon={setAllUsersIcon} accountInfo={accountInfo}
               socket={socket} setAccountInfo={setAccountInfo} setChatRecord={setChatRecord} setFdListWithIcon={setFdListWithIcon} />}
+          />
+          <Route path="/createaccount" render={(props) =>
+            <CreateAccountPage {...props} socket={socket} />}
           />
           {(!accountInfo) && <Redirect to={{ pathname: "/login", }} />}
           <Route exact path="/" render={(props) =>

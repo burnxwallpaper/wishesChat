@@ -1,0 +1,26 @@
+.Popup{
+    background-color: rgb(248, 83, 83);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 170px;
+    height: 100px;
+    box-shadow: 0 0 2px 1px grey;
+    border-radius: 5px;
+}
+.Popup div{
+    margin:0 5px;
+    color: white;
+}
+.Popup button{
+    border: 1px groove transparent;
+    margin-top: 5px;
+    border-radius: 3px;
+    box-shadow: 0 0 2px 1px grey;
+}

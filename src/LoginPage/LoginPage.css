@@ -40,6 +40,14 @@
     border-bottom: 1px solid white;
     transition: 0.4s;
   }
+
+  .createAccount{
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .createAccount:hover{
+    color: rgb(199, 199, 243);
+  }
   @media screen and (max-width: 272px) {
     .form-field {
       width: 100%;
