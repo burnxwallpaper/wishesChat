@@ -26,7 +26,12 @@ function MainLobby({ socket, allUsersIcon, roomList, setRoomID, props, redirect,
                         {onlineUsers.map(
                             (username) => {
                                 return <div id={`user-${username}`} key={`user-${username}`} className="user">
-                                    <div className="iconImg othersIcon" style={{ backgroundImage: `url(${(allUsersIcon[username]) || defaultIcon})` }}></div>
+                                    {username === (accountInfo && accountInfo.username) ?
+                                        <div className="iconImg othersIcon" style={{ backgroundImage: `url(${accountInfo.iconImage || defaultIcon})` }}></div>
+                                        :
+                                        <div className="iconImg othersIcon" style={{ backgroundImage: `url(${(allUsersIcon[username]) || defaultIcon})` }}></div>
+                                    }
+
                                     <div>{username}
                                         {!accountInfo.friends.includes(username) && username !== "遊客" && accountInfo.username !== "遊客" && accountInfo.username !== username
                                             && <i onClick={() => addFriend(username)} className="fas fa-user-plus"></i>}
