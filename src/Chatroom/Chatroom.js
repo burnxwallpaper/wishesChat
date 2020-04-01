@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Chatroom.css'
 import InputBox from '../Common/InputBox'
+import Popup from '../Common/Popup'
 
 
 function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, allUsersIcon, ...props }) {
@@ -11,13 +12,16 @@ function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, al
         return () => {
             socket.emit('leave', { username: username, roomID: roomID });
             console.log("unmount")
-            socket.removeAllListeners()
+            //socket.removeAllListeners()
         }
     }, [])
     function ready() {
         //initial
         updateChat(prev => prev.length = 0)
         socket.removeAllListeners()
+        socket.on('disconnect', () => {
+            if (socket.disconnect) Popup()
+        })
         socket.emit("join", { username: username, roomID: roomID })
         socket.on("roomInfo", function (message) {
             let room = []

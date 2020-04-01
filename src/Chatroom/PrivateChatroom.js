@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 //import './PrivateChatroom.css'
 import InputBox from '../Common/InputBox'
+import Popup from '../Common/Popup'
+
 
 function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateChat, setChatRecord, accountInfo, chatTargetInfo, ...props }) {
     let username = accountInfo.username
@@ -10,13 +12,16 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
         return () => {
             socket.emit('leave', { username: username, roomID: roomID });
             console.log("unmount")
-            socket.removeAllListeners()
+            //socket.removeAllListeners()
         }
     }, [])
 
     function ready() {
         //initial
         socket.removeAllListeners()
+        socket.on('disconnect', () => {
+            if (socket.disconnect) Popup()
+        })
         socket.emit("joinPrivateChat", { roomID: roomID })
         let allmsg = chatRecord[roomID].msg || []
         let allmsgTemp = []
