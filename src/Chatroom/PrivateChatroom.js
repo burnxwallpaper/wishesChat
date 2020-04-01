@@ -38,7 +38,9 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
             console.log("broadcast")
             updateChat(prev => !prev ? [newMessage] : [...prev, newMessage])
             //scoll to bottom when new message comes
-            document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+            if (document.getElementById('chat-messsages')) {
+                document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+            }
         })
         socket.on("chatRecordUpdate", (res) => {
             console.log("chatRecordUpdate")

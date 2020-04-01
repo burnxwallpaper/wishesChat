@@ -62,7 +62,8 @@
     height: 100%;
     width:10px;
     display: none;
-    
+    color:white;
+
 }
 
 #allUserList,#friendList{
@@ -71,10 +72,10 @@
 }
 
 #profileIcon{
-    margin: 5px auto;
+    margin: 15px auto;
 }
 
-.fa.fa-user-plus{
+.fa-user-plus{
     cursor: pointer;
 }
 
@@ -86,7 +87,14 @@
 }
 
 .user{
-    height: 30px;
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0;
+}
+.user div:nth-child(2) {
+    width: 80px;
+    word-wrap: break-word;
+
 }
 
 .friend{
@@ -105,21 +113,20 @@
     border: 1px solid transparent;
     background-color: white;
     background-size:cover;
-    margin: 10px auto;
-    
+    margin: 10px auto; 
 }
 
 .othersIcon{
     width:20px;
     height:20px;
-    display: inline-block;
+    margin: unset;
+
 }
 .othersIcon ~div{
-
     display: inline-block;
-    font-size: 1.3em;
-    transform: translateY(-60%);
+    font-size: 1.2em;
     margin-left: 5px;
+    transform: translateY(-5%);
 }
 
 .fdStatusLabel{
@@ -157,7 +164,7 @@
 }
 @media screen and (max-width: 500px) {
     .userList {
-
+        color:cadetblue;
         width:150px;
         opacity:0.5;
         padding-top: unset;
@@ -166,6 +173,7 @@
         transform: translateX(-90%);
     }
     .userList:hover{
+        color:black;
         transform: translateX(0);
         opacity:0.9;
     }
@@ -182,20 +190,13 @@
   }
 
 @media screen and (max-width: 330px) {
-    .iconImg{
-        margin:0 auto;
-    }
+    
     .LobbyPage{
         height: calc(100vh - 73px); 
     }
-    .othersIcon ~div {
-        
-        transform: translateY(-30%);
-        margin-left: 5px;
-    }
+    
     .userList {
-        top:73px;
-        
+        top:73px;  
         font-size: 0.8em;
     }
     .createBtn{

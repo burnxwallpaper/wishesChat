@@ -40,7 +40,10 @@ function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, al
             console.log("broadcast")
             updateChat(prev => !prev ? [newMessage] : [...prev, newMessage])
             //scoll to bottom when new message comes
-            document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+            if (document.getElementById('chat-messsages')) {
+                document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+            }
+
         })
     }
     function handleSubmit(e) {

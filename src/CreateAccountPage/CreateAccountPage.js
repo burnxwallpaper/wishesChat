@@ -38,12 +38,12 @@ function CreateAccountPage({ socket, ...props }) {
                 <span id="loginLabel">New Account</span>
                 <br></br>
                 <div className="form-field">
-                    <label htmlFor="inputName">Username: </label>
-                    <input id="inputName" type="text" name="username" className="form-field" required></input>
+                    <label htmlFor="inputName" >Username: </label>
+                    <input id="inputName" type="text" name="username" className="form-field" maxLength="9" required></input>
                 </div>
                 <div className="form-field">
                     <label htmlFor="inputPassword">Password: </label>
-                    <input id="inputPassword" type="password" name="password" className="form-field" required></input>
+                    <input id="inputPassword" type="password" name="password" className="form-field" maxLength="9" required></input>
                 </div>
                 <input className="loginBtn" type="submit" value="Create"></input>
                 <Link to="/login" className="createAccount">Login</Link>

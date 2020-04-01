@@ -44,6 +44,7 @@
 
 }
 .userList.inChatRoom.translateX100{
+    color:black;
     transform: translateX(0);
     opacity:1;
     

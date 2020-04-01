@@ -15,13 +15,16 @@ function MailBox({ accountInfo, setMailBox, socket }) {
     return (
         <div id="MailBox">
             <button id="MailBoxclosBtn" onClick={() => close()}>X</button>
-            {accountInfo.fdRequestReceived.map((username) => {
-                return <div id={`fdRequestReceived-${username}`} key={`fdRequestReceived-${username}`}>
-                    <div className="MailBoxAcceptFdName">{username}</div>
-                    <button className="MailBoxAcceptFd" onClick={() => acceptFriend(username)}>Acccept</button>
-                </div>
-            })}
-            {accountInfo.fdRequestReceived.length === 0 && <div>You have 0 friend request</div>}
+            <div className="MailBoxList">
+                {accountInfo.fdRequestReceived.map((username) => {
+                    return <div id={`fdRequestReceived-${username}`} key={`fdRequestReceived-${username}`} className="fdRequestReceived">
+                        <div className="MailBoxAcceptFdName">{username}</div>
+                        <button className="MailBoxAcceptFd" onClick={() => acceptFriend(username)}>Acccept</button>
+                    </div>
+                })}
+                {accountInfo.fdRequestReceived.length === 0 && <div>You have 0 friend request</div>}
+            </div>
+
         </div>
     )
 }
