@@ -9,7 +9,7 @@ function CreateAccountPage({ socket, ...props }) {
     }, []
     )
 
-    function createAccount(visitor = false) {
+    function createAccount() {
         Spinner()
         socket.removeAllListeners()
         let username = document.getElementById("inputName").value;
@@ -38,20 +38,23 @@ function CreateAccountPage({ socket, ...props }) {
         })
     }
     return (
-        <div className="loginPage">
+        <div >
+            <form className="loginPage" onSubmit={() => { createAccount() }}>
+                <span id="loginLabel">New Account</span>
+                <br></br>
+                <div className="form-field">
+                    <label htmlFor="inputName">Username: </label>
+                    <input id="inputName" type="text" name="username" className="form-field" required></input>
+                </div>
+                <div className="form-field">
+                    <label htmlFor="inputPassword">Password: </label>
+                    <input id="inputPassword" type="password" name="password" className="form-field" required></input>
+                </div>
+                <input className="loginBtn" type="submit" value="Create"></input>
+                <Link to="/login" className="createAccount">Login</Link>
+            </form>
 
-            <span id="loginLabel">New Account</span>
-            <br></br>
-            <div className="form-field">
-                <label htmlFor="inputName">Username: </label>
-                <input id="inputName" type="text" name="username" className="form-field" required></input>
-            </div>
-            <div className="form-field">
-                <label htmlFor="inputPassword">Password: </label>
-                <input id="inputPassword" type="password" name="password" className="form-field" required></input>
-            </div>
-            <button className="loginBtn" onClick={() => createAccount()}>Create</button>
-            <Link to="/login" className="createAccount">Login</Link>
+
         </div>
     )
 }

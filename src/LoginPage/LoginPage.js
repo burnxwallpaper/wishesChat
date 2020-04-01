@@ -49,21 +49,25 @@ function LoginPage({ socket, setAccountInfo, accountInfo, setChatRecord, setAllU
     }
     //<Link to="/createaccount" >CreateAccount</Link>
     return (
-        <div className="loginPage">
-            <span id="loginLabel">Login</span>
-            <span className="tooltipac" title="username from `aaa` to `ddd`, pw is the same ;  ( e.g. username = `bbb`; pw=`bbb`)" >Test account info</span>
-            <div className="form-field">
-                <label htmlFor="inputName">Username: </label>
-                <input id="inputName" type="text" name="username" className="form-field" required></input>
-            </div>
-            <div className="form-field">
-                <label htmlFor="inputPassword">Password: </label>
-                <input id="inputPassword" type="password" name="password" className="form-field" required></input>
-            </div>
+        <div >
+            <form className="loginPage" onSubmit={() => { login(false) }}>
+                <span id="loginLabel">Login</span>
+                <span className="tooltipac" title="username from `aaa` to `ddd`, pw is the same ;  ( e.g. username = `bbb`; pw=`bbb`)" >Test account info</span>
+                <div className="form-field">
+                    <label htmlFor="inputName">Username: </label>
+                    <input id="inputName" type="text" name="username" className="form-field" required></input>
+                </div>
+                <div className="form-field">
+                    <label htmlFor="inputPassword">Password: </label>
+                    <input id="inputPassword" type="password" name="password" className="form-field" required></input>
+                </div>
 
-            <button className="loginBtn" onClick={() => login(false)}>Login</button>
-            <div className="wrongAuth" id="authWrong"></div>
-            <Link to="/createaccount" className="createAccount">Create Account</Link>
+                <input className="loginBtn" value="Login" type="submit"></input>
+                <div className="wrongAuth" id="authWrong"></div>
+                <Link to="/createaccount" className="createAccount">Create Account</Link>
+            </form>
+
+
 
         </div>
     )
