@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './Chatroom.css'
 import InputBox from '../Common/InputBox'
 import Popup from '../Common/Popup'
+import SuccessNotify from '../Common/SuccessNotify'
 
 
-function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, allUsersIcon, ...props }) {
+function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, allUsersIcon, setAccountInfo, ...props }) {
     const [roomInfo, setRoomInfo] = useState(["empty"])
     let username = accountInfo.username
     useEffect(() => {
@@ -41,9 +42,21 @@ function Chatroom({ setRoomID, roomID, chat, socket, updateChat, accountInfo, al
             updateChat(prev => !prev ? [newMessage] : [...prev, newMessage])
             //scoll to bottom when new message comes
             if (document.getElementById('chat-messsages')) {
-                document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+                if (document.getElementById('chat-messsages').lastChild) {
+                    document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+                }
             }
 
+        })
+        socket.on("updateAccountInfo", (req) => {
+            console.log("updateAccountInfo")
+            setAccountInfo(req.accountInfo)
+        })
+        socket.on("newFdRequest", (req) => { console.log(req.requestor + " want to add you") })
+        socket.on("newFdAccept", (req) => { console.log(req.acceptor + " added you") })
+        socket.on("systemMsg", (res) => {
+            console.log(res.msg)
+            SuccessNotify(res.msg)
         })
     }
     function handleSubmit(e) {

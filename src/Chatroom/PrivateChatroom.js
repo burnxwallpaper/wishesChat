@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 //import './PrivateChatroom.css'
 import InputBox from '../Common/InputBox'
 import Popup from '../Common/Popup'
+import SuccessNotify from '../Common/SuccessNotify'
 
 
-function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateChat, setChatRecord, accountInfo, chatTargetInfo, ...props }) {
+function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateChat, setChatRecord, setAccountInfo, accountInfo, chatTargetInfo, ...props }) {
     let username = accountInfo.username
     useEffect(() => {
         ready()
@@ -39,13 +40,25 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
             updateChat(prev => !prev ? [newMessage] : [...prev, newMessage])
             //scoll to bottom when new message comes
             if (document.getElementById('chat-messsages')) {
-                document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+                if (document.getElementById('chat-messsages').lastChild) {
+                    document.getElementById('chat-messsages').lastChild.scrollIntoView(false)
+                }
             }
         })
         socket.on("chatRecordUpdate", (res) => {
             console.log("chatRecordUpdate")
             setChatRecord(res.chatRecord)
             socket.emit("markMsgRead")
+        })
+        socket.on("updateAccountInfo", (req) => {
+            console.log("updateAccountInfo")
+            setAccountInfo(req.accountInfo)
+        })
+        socket.on("newFdRequest", (req) => { console.log(req.requestor + " want to add you") })
+        socket.on("newFdAccept", (req) => { console.log(req.acceptor + " added you") })
+        socket.on("systemMsg", (res) => {
+            console.log(res.msg)
+            SuccessNotify(res.msg)
         })
     }
     function handleSubmit(e) {

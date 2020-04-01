@@ -67,11 +67,11 @@ function App() {
             />}
           />
           <Route path="/room" render={(props) =>
-            <Chatroom {...props} allUsersIcon={allUsersIcon}
+            <Chatroom {...props} allUsersIcon={allUsersIcon} setAccountInfo={setAccountInfo}
               setRoomID={setRoomID} roomID={roomID} chat={chat} socket={socket} updateChat={updateChat} accountInfo={accountInfo} />}
           />
           <Route path="/privateroom" render={(props) =>
-            <PrivateChatroom {...props} chatTargetInfo={chatTargetInfo}
+            <PrivateChatroom {...props} chatTargetInfo={chatTargetInfo} setAccountInfo={setAccountInfo}
               setChatRecord={setChatRecord} chatRecord={chatRecord} setRoomID={setRoomID} roomID={roomID} chat={chat} socket={socket} updateChat={updateChat} accountInfo={accountInfo} />}
           />
           <Route render={() => <div>Page Not Found</div>} />

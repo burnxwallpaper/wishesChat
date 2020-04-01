@@ -9,6 +9,7 @@ function MailBox({ accountInfo, setMailBox, socket }) {
     }
     function acceptFriend(username) {
         socket.emit("fdRequestAccept", { username: username })
+        document.getElementById(`MailBoxAcceptFdBtn-${username}`).disabled = "disabled"
         console.log("fdRequestAccept")
     }
     freeze()
@@ -19,7 +20,7 @@ function MailBox({ accountInfo, setMailBox, socket }) {
                 {accountInfo.fdRequestReceived.map((username) => {
                     return <div id={`fdRequestReceived-${username}`} key={`fdRequestReceived-${username}`} className="fdRequestReceived">
                         <div className="MailBoxAcceptFdName">{username}</div>
-                        <button className="MailBoxAcceptFd" onClick={() => acceptFriend(username)}>Acccept</button>
+                        <button id={`MailBoxAcceptFdBtn-${username}`} className="MailBoxAcceptFd" onClick={() => acceptFriend(username)}>Acccept</button>
                     </div>
                 })}
                 {accountInfo.fdRequestReceived.length === 0 && <div>You have 0 friend request</div>}
