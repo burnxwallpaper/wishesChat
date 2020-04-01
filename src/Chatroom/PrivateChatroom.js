@@ -24,7 +24,8 @@ function PrivateChatroom({ chatRecord, setRoomID, roomID, chat, socket, updateCh
             if (socket.disconnect) Popup()
         })
         socket.emit("joinPrivateChat", { roomID: roomID })
-        let allmsg = chatRecord[roomID].msg || []
+
+        let allmsg = chatRecord[roomID].msg
         let allmsgTemp = []
         for (let i = 0; i < allmsg.length; i++) {
             allmsgTemp.push({
