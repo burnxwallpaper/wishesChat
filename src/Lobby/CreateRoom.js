@@ -14,7 +14,7 @@ function CreateRoom(setRoomID, props, socket, username) {
             <div className="close btn" onClick={closeWindow}>Close</div>
             <form onSubmit={createRoom}>
                 Please enter room name:
-            <input id="createRoomID" maxLength="6"></input>
+                <input id="createRoomID" maxLength="6" required></input>
                 <input type="submit" value="Create"></input>
             </form>
         </div>
