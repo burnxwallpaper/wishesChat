@@ -23,4 +23,5 @@
     margin-top: 5px;
     border-radius: 3px;
     box-shadow: 0 0 2px 1px grey;
+    cursor: pointer;
 }

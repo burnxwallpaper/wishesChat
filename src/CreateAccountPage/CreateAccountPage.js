@@ -1,18 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import SuccessNotify from '../Common/SuccessNotify'
 import Spinner from '../Common/Spinner'
 import { Link } from "react-router-dom";
 function CreateAccountPage({ socket, ...props }) {
-    useEffect(() => {
-        socket.emit('disconnect')
-        socket.removeAllListeners()
-    }, []
-    )
 
     function createAccount(e) {
         e.preventDefault()
         Spinner()
-        socket.removeAllListeners()
         let username = document.getElementById("inputName").value;
         let password = document.getElementById("inputPassword").value
 

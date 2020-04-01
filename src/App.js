@@ -34,12 +34,14 @@ function App() {
     setSocket(io("https://wisheschatroomapi.herokuapp.com/"))
   }
   useEffect(() => {
-    if (socket && accountInfo) {
-      socket.on('disconnect', () => {
-        Popup()
-      })
-    }
-  }, [socket])
+
+    socket.on('disconnect', () => {
+      if (socket.disconnect) Popup()
+
+
+    })
+
+  }, [accountInfo])
 
   return (
 
