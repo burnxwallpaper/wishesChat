@@ -25,7 +25,7 @@ function CreateAccountPage({ socket, ...props }) {
             }
             else {
                 setTimeout(() => {
-                    SuccessNotify("Username has been used", "red")
+                    SuccessNotify(res.msg, "red")
                     Spinner(false)
                 }, 300)
             }
