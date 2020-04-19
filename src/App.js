@@ -25,13 +25,13 @@ function App() {
   const [chat, updateChat] = useState([])
   const [chatTargetInfo, setChatTargetInfo] = useState()
   const history = useHistory();
-  //let devSer = "ws://localhost:4000"
+  let devSer = "ws://localhost:4000"
   if (!socket) {
     console.log("connect socket")
     const io = require('socket.io-client')
-    //setSocket(io(devSer))
+    setSocket(io(devSer))
 
-    setSocket(io("https://wisheschatroomapi.herokuapp.com/"))
+    //setSocket(io("https://wisheschatroomapi.herokuapp.com/"))
   }
   useEffect(() => {
 

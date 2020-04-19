@@ -217,7 +217,7 @@ io.on('connection', function (socket) {
       room.markModified('msg');
       if (unreadCount > 0) {
         await room.save().then(async () => {
-          console.log("read done")
+          console.log("msg read")
           let msg = await findPrivateChatMsg(socket)
           socket.emit("chatRecordUpdate", { chatRecord: msg })
         })
@@ -328,7 +328,7 @@ io.on('connection', function (socket) {
           socket.emit("systemMsg", { msg: `Friend request is sent to ${fdWantToAdd}!` })
         })
       } else {
-        socket.emit("systemMsg", { msg: `You request to ${fdWantToAdd} is sent before.` })
+        socket.emit("systemMsg", { msg: `Your request to ${fdWantToAdd} is pending.` })
       }
     })
 
@@ -403,6 +403,7 @@ io.on('connection', function (socket) {
       user.iconImage = req.imageURL
       user.save().then(() => {
         console.log("updateSuccess");
+        socket.iconImage = req.imageURL
         socket.emit("updateAccountInfo", { accountInfo: user })
       })
     })
@@ -441,6 +442,16 @@ io.on('connection', function (socket) {
 
   //creatAccount
   socket.on('createAccount', async function (accountInfo) {
+    if (!accountInfo.username.match(/^[A-Za-z0-9]{3,9}$/)) {
+      socket.emit("createAccount", { success: false, msg: "Create account failed: username invalid format" })
+      console.log("invalid format,create fail")
+      return
+    }
+    if (!accountInfo.password.match(/^[A-Za-z0-9]{3,9}$/)) {
+      socket.emit("createAccount", { success: false, msg: "Create account failed: password invalid format" })
+      console.log("invalid format,create fail")
+      return
+    }
     async function validRepeatCheck() {
       let validCheck
       await Account.findOne({ username: accountInfo.username }, (err, user) => {
@@ -452,7 +463,7 @@ io.on('connection', function (socket) {
     }
     let valid = await validRepeatCheck()
     if (!valid) {
-      socket.emit("createAccount", { success: false })
+      socket.emit("createAccount", { success: false, msg: "Create account failed: Username has been used" })
       console.log("repeated user")
       return
     }
@@ -466,6 +477,7 @@ io.on('connection', function (socket) {
       fdRequestSent: [],
     })
     account.save().then(() => {
+      console.log("Create account success")
       socket.emit("createAccount", { success: true })
     })
   })
